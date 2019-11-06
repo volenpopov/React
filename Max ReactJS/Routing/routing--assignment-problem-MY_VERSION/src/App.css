@@ -1,0 +1,15 @@
+nav a {
+    color: inherit;
+    text-decoration: none;
+    
+}
+
+nav a:first-child {
+    margin-right: 16px;
+}
+
+a.active {
+    color: orange;
+    font-weight: bold;
+    border-bottom: 3px solid orange;
+}
