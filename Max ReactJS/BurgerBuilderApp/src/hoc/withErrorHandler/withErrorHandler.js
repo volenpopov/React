@@ -8,6 +8,8 @@ const withErrorHandler = (WrappedComponent, axios) => {
         constructor(props) {
             super(props);
 
+            this.state = {error: null};
+
             //Assigning the interceptors as properties, so
             //we can clean them up when unmounting the component
             //from the DOM and ensure no memory leaks
@@ -19,8 +21,6 @@ const withErrorHandler = (WrappedComponent, axios) => {
             this.respInterceptor = axios.interceptors.response.use(resp => resp, error => {
                 this.setState({error: error});
             });
-
-            this.state = {error: null};
         }
 
         //Since the lifecycle hook componentWillMount will be deprecated
