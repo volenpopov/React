@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as actions from '../../store/actions/index';
 
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import Burger from '../../components/Burger/Burger';
@@ -9,26 +9,15 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-
 import axios from '../../axios-orders';
-
-
 
 class BurgerBuilder extends Component {
     state = {
-        purchasable: false,
-        purchasing: false,
-        loading: false,
-        error: false
+        purchasing: false
     };
 
     componentDidMount() {
-        // axios.get('https://burgerbuilder-6f349.firebaseio.com/ingredients.json')
-        //     .then(response => {
-        //         const ingredients = response.data;
-        //         this.setState({ingredients});
-        //     })
-        //     .catch(error => this.setState({error: true}));
+        this.props.onInitIngredients();
     }
 
     purchaseHandler = () => {
@@ -36,10 +25,11 @@ class BurgerBuilder extends Component {
     }
 
     puchaseCancelHandler = () => {
-        this.setState({purchasing: false});        
+        this.setState({purchasing: false});
     }
 
     puchaseContinueHandler = () => {
+        this.props.onInitPurchase();
         this.props.history.push('/checkout');
     }
 
@@ -62,8 +52,8 @@ class BurgerBuilder extends Component {
 
         let orderSummary = null;
 
-        let burger = this.state.error
-            ? <p 
+        let burger = this.props.error
+            ? <p
                 style={{textAlign: 'center', color: 'red', fontWeight: 'bold'}}>
                 Ingredients couldn't be loaded!
               </p>
@@ -83,15 +73,11 @@ class BurgerBuilder extends Component {
                 </Aux>
             );
 
-            orderSummary = <OrderSummary 
+            orderSummary = <OrderSummary
             ingredients={this.props.ingredients}
             price={this.props.price}
             purchaseCancelled={this.puchaseCancelHandler}
             purchaseContinued={this.puchaseContinueHandler}/>;
-
-            if (this.state.loading) {
-                orderSummary = <Spinner/>;
-            }
         }
 
         return (
@@ -101,21 +87,24 @@ class BurgerBuilder extends Component {
                 </Modal>
                 {burger}
             </Aux>
-        );        
+        );
     }
 }
 
 const mapStateToProps = state => {
     return {
-       ingredients: state.ingredients,
-       price: state.totalPrice 
+       ingredients: state.burgerBuilder.ingredients,
+       price: state.burgerBuilder.totalPrice,
+       error: state.burgerBuilder.error
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: ingredientName => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName}),
-        onIngredientRemoved: ingredientName => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName})
+        onIngredientAdded: ingredientName => dispatch(actions.addIngredient(ingredientName)),
+        onIngredientRemoved: ingredientName => dispatch(actions.removeIngredient(ingredientName)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     };
 };
 
