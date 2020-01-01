@@ -16,10 +16,10 @@ module.exports = {
         email: args.userInput.email,
         password: hashedPassword
       });
+ 
+      await user.save();
 
-      const result = await user.save();
-
-      return { ...result._doc, password: null, _id: result.id };
+      await this.login(user.email, args.userInput.password)
     } catch (err) {
       throw err;
     }

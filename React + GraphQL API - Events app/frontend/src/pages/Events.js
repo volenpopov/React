@@ -35,6 +35,8 @@ class EventsPage extends Component {
   };
 
   modalConfirmHandler = () => {
+    console.log("yey");
+    
     this.setState({ creating: false });
     const title = this.titleElRef.current.value;
     const price = +this.priceElRef.current.value;
