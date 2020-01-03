@@ -3,11 +3,14 @@ import React, { Component } from 'react';
 import Spinner from '../components/Spinner/Spinner';
 import AuthContext from '../context/auth-context';
 import BookingList from '../components/Bookings/BookingList';
+import BookingsChart from '../components/Bookings/BookingsChart/BookingsChart';
+import BookingsControls from '../components/Bookings/BookingsControls/BookingsControls';
 
 class BookingsPage extends Component {
   state = {
     isLoading: false,
-    bookings: []
+    bookings: [],
+    outputType: 'list'
   };
 
   static contextType = AuthContext;
@@ -28,6 +31,7 @@ class BookingsPage extends Component {
                _id
                title
                date
+               price
              }
             }
           }
@@ -69,9 +73,9 @@ class BookingsPage extends Component {
             }
           }
         `,
-        variables: {
-          id: bookingId
-        }
+      variables: {
+        id: bookingId
+      }
     };
 
     fetch('http://localhost:8000/graphql', {
@@ -102,19 +106,37 @@ class BookingsPage extends Component {
       });
   };
 
+  changeOutputTypeHandler = outputType => {
+    if (outputType === 'list') {
+      this.setState({ outputType: 'list' });
+    } else {
+      this.setState({ outputType: 'chart' });
+    }
+  };
+
   render() {
-    return (
-      <React.Fragment>
-        {this.state.isLoading ? (
-          <Spinner />
-        ) : (
-          <BookingList
-            bookings={this.state.bookings}
-            onDelete={this.deleteBookingHandler}
+    let content = <Spinner />;
+    if (!this.state.isLoading) {
+      content = (
+        <React.Fragment>
+          <BookingsControls
+            activeOutputType={this.state.outputType}
+            onChange={this.changeOutputTypeHandler}
           />
-        )}
-      </React.Fragment>
-    );
+          <div>
+            {this.state.outputType === 'list' ? (
+              <BookingList
+                bookings={this.state.bookings}
+                onDelete={this.deleteBookingHandler}
+              />
+            ) : (
+              <BookingsChart bookings={this.state.bookings} />
+            )}
+          </div>
+        </React.Fragment>
+      );
+    }
+    return <React.Fragment>{content}</React.Fragment>;
   }
 }
 
