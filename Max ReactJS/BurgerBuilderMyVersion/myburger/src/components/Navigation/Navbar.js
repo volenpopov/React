@@ -29,7 +29,7 @@ const navbar = props => {
             ? <Nav.Link style={navLinkStyle}>Logout</Nav.Link>
             : (
                 <Fragment>
-                  <Link to="/login" className="mr-4" style={navLinkStyle}>Login</Link> 
+                  <Link to="/login" className="mr-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Login</Link> 
                   <Link to="/register" style={navLinkStyle}>Register</Link> 
                 </Fragment>                
               )           
