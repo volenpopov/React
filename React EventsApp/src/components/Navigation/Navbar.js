@@ -14,13 +14,7 @@ const navbar = props => {
   return (
     <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
       <Navbar.Brand>
-        <img
-          alt="Burger Logo"
-          src={img}
-          width="45"
-          height="35"
-          className="d-inline-block align-top"
-        /> Burger Builder
+        EventsApp
     </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
