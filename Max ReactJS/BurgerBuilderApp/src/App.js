@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import asyncComponent from './hoc/asyncComponent/asyncComponent';
+// import asyncComponent from './hoc/asyncComponent/asyncComponent';
 
+import Auth from './containers/Auth/Auth';
+import Checkout from './containers/Checkout/Checkout';
+import Orders from './containers/Orders/Orders';
 import Layout from './hoc/Layout/Layout';
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import Logout from './containers/Auth/Logout/Logout';
@@ -9,17 +12,17 @@ import * as actions from './store/actions/index';
 
 import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 
-const asyncCheckout = asyncComponent(() => {
-  return import('./containers/Checkout/Checkout');
-});
+// const asyncCheckout = asyncComponent(() => {
+//   return import('./containers/Checkout/Checkout');
+// });
 
-const asyncOrders = asyncComponent(() => {
-  return import('./containers/Orders/Orders');
-});
+// const asyncOrders = asyncComponent(() => {
+//   return import('./containers/Orders/Orders');
+// });
 
-const asyncAuth = asyncComponent(() => {
-  return import('./containers/Auth/Auth');
-});
+// const asyncAuth = asyncComponent(() => {
+//   return import('./containers/Auth/Auth');
+// });
 
 class App extends Component {
   componentDidMount() {
