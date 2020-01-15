@@ -1,18 +1,18 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import ThemeContext from '../../context/theme-context';
 
-const img = require("../../resources/burger-logo.png");
-
-const navbar = props => {
-
+const Navigationbar = props => {
+  const themeContext = useContext(ThemeContext);
+  
   const navLinkStyle = {
-    color: 'white',
-    fontSize: '20px'
+    fontSize: '1.25rem',
+    color: 'white'
   };
 
   return (
-    <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="sm" bg={themeContext.themeColor} variant="dark">
       <Navbar.Brand>
         EventsApp
     </Navbar.Brand>
@@ -20,7 +20,7 @@ const navbar = props => {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
           {props.authenticated
-            ? <Nav.Link style={navLinkStyle}>Logout</Nav.Link>
+            ? <Nav.Link onClick={props.userLogout}>Logout</Nav.Link>
             : (
                 <Fragment>
                   <Link to="/login" className="mr-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Login</Link> 
@@ -34,4 +34,4 @@ const navbar = props => {
   );
 };
 
-export default navbar;
+export default Navigationbar;
