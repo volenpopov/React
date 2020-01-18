@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import * as validators from '../../helpers/validators';
 import * as constants from '../../helpers/constants';
 import * as errorMessages from '../../helpers/errorMessages';
-
 import { Form, Button } from 'react-bootstrap';
+import ThemeContext from '../../context/theme-context';
 
 class AuthenticationForm extends Component {
     state = {
@@ -18,17 +18,21 @@ class AuthenticationForm extends Component {
         }
     };
 
+    static contextType = ThemeContext;
+
     onFormSubmit = event => {
         event.preventDefault();
 
         this.setState({ hasBeenSubmitted: true });
 
-        const emailIsRequiredError = validators.isRequired('email')(this.state.email);        
-        const passwordIsRequiredError = validators.isRequired('password')(this.state.password);        
+        const { email, password, confirmPassword } = this.state;
+
+        const emailIsRequiredError = validators.isRequired('email')(email);        
+        const passwordIsRequiredError = validators.isRequired('password')(password);        
     
         const emailError = emailIsRequiredError ? emailIsRequiredError : this.state.errorMessages.email;
         const passwordError = passwordIsRequiredError ? passwordIsRequiredError : this.state.errorMessages.password;
-        const confirmPasswordError = this.state.confirmPassword !== this.state.password
+        const confirmPasswordError = confirmPassword !== password
             ? errorMessages.PASSWORD_MISMATCH
             : null;
 
@@ -43,6 +47,17 @@ class AuthenticationForm extends Component {
                     }
                 });
         }
+
+        fetch(constants.REGISTER_URL, {
+            method: 'POST',
+            body: JSON.stringify({email, password, returnSecureToken: true })
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                const { idToken, expiresIn, localId } = data;                
+                this.props.userLogin(idToken, expiresIn, localId);
+            })
+            .catch(err => console.log(err));                      
     };
 
     onEmailChanged = event => {
@@ -139,7 +154,7 @@ class AuthenticationForm extends Component {
 
                     {this.props.login ? null : confirmPasswordField}                
 
-                    <Button className="px-4" variant="primary" type="submit">
+                    <Button className={`px-4 btn-${this.context.themeColor}`} variant="primary" type="submit" disabled={emailError || passwordError}>
                         {this.props.login ? "Login" : "Register"}                                    
                     </Button>
                 </Form>
