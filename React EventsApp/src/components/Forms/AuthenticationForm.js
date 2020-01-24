@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import * as validators from '../../helpers/validators';
 import * as constants from '../../helpers/constants';
 import * as errorMessages from '../../helpers/errorMessages';
 import { Form, Button } from 'react-bootstrap';
 import ThemeContext from '../../context/theme-context';
+import * as authActions from '../../store/actions/auth';
 
 class AuthenticationForm extends Component {
     state = {
@@ -48,16 +50,7 @@ class AuthenticationForm extends Component {
                 });
         }
 
-        fetch(constants.REGISTER_URL, {
-            method: 'POST',
-            body: JSON.stringify({email, password, returnSecureToken: true })
-        })
-            .then(resp => resp.json())
-            .then(data => {
-                const { idToken, expiresIn, localId } = data;                
-                this.props.userLogin(idToken, expiresIn, localId);
-            })
-            .catch(err => console.log(err));                      
+        this.props.onAuth(email, password, this.props.login);                     
     };
 
     onEmailChanged = event => {
@@ -116,6 +109,16 @@ class AuthenticationForm extends Component {
     };
 
     render() {
+        if (this.props.loading) {
+            return null;
+            //ADD SPINNER
+        }
+
+        if (this.props.error) {
+            //DISPLAY SERVER ERROR
+        }
+        
+
         const formHasBeenSubmitted = this.state.hasBeenSubmitted;
         const emailError = this.state.errorMessages.email;
         const passwordError = this.state.errorMessages.password;
@@ -163,4 +166,18 @@ class AuthenticationForm extends Component {
     };
 }
 
-export default AuthenticationForm;
+const mapStateToProps = state => {
+    return {
+        loading: state.loading,
+        error: state.error,
+        isAuthenticated: state.token !== null
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onAuth: ( email, password, login ) => dispatch(authActions.auth(email, password, login)) 
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthenticationForm);

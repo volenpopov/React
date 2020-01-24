@@ -1,7 +1,9 @@
 import React, { Fragment, useContext } from 'react';
+import { connect } from 'react-redux';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import ThemeContext from '../../context/theme-context';
+import * as actions from '../../store/actions/auth';
 
 const Navigationbar = props => {
   const themeContext = useContext(ThemeContext);
@@ -20,7 +22,7 @@ const Navigationbar = props => {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
           {props.authenticated
-            ? <Nav.Link onClick={props.userLogout}>Logout</Nav.Link>
+            ? <p onClick={props.onLogout} className="mt-2 mt-sm-0 mb-2 mb-sm-0" style={{ ...navLinkStyle, cursor: 'pointer' }}>Logout</p>
             : (
                 <Fragment>
                   <Link to="/login" className="mr-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Login</Link> 
@@ -34,4 +36,10 @@ const Navigationbar = props => {
   );
 };
 
-export default Navigationbar;
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogout: () => dispatch(actions.logout())
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Navigationbar);
