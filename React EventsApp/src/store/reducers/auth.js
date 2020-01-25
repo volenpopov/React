@@ -3,13 +3,14 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
     token: null,
     userId: null,
+    userEmail: null,
     error: null,
     loading: false,
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.AUTH_START:
+        case actionTypes.AUTH_START:           
             return {
                 ...state,
                 error: null,
@@ -20,6 +21,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 token: action.idToken,
                 userId: action.userId,
+                userEmail: action.email,
                 error: null,
                 loading: false
             };
@@ -33,8 +35,15 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 token: null,
-                userId: null
-            };        
+                userId: null,
+                userEmail: null,
+                loading: false                
+            };
+        case actionTypes.AUTH_CLEAR_ERROR:
+            return {
+                ...state,
+                error: null
+            }
         default:
             return state;
     }

@@ -2,6 +2,7 @@ const PASSWORD_MIN_LENGTH = 6;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const REGISTER_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
 const LOGIN_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
+const GET_USER_DATA_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
 
 const DEFAULT_THEME = 'dark';
 const BLUE_THEME = 'primary';
@@ -17,6 +18,7 @@ export {
     EMAIL_REGEX,
     REGISTER_URL,
     LOGIN_URL,
+    GET_USER_DATA_URL,
     DEFAULT_THEME,
     THEMES_ARRAY
 };

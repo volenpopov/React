@@ -22,6 +22,23 @@ class AuthenticationForm extends Component {
 
     static contextType = ThemeContext;
 
+    componentDidUpdate = prevProps => {
+        //CLEAR ERROR MESSAGES WHEN SWITCHING BETWEEN LOGIN AND REGISTER PAGES        
+        if (this.props.login !== prevProps.login) {
+            if (this.props.login) {
+                this.props.onAuthPageRefresh();
+            }
+            
+            this.setState({
+                errorMessages: {
+                    email: null,
+                    password: null,
+                    confirmPassword: null
+                }
+            });
+        }
+    };
+
     onFormSubmit = event => {
         event.preventDefault();
 
@@ -114,11 +131,13 @@ class AuthenticationForm extends Component {
             //ADD SPINNER
         }
 
-        if (this.props.error) {
-            //DISPLAY SERVER ERROR
+        let serverError = this.props.error;
+        if (serverError && serverError.message) {            
+            serverError = serverError.message;                       
         }
-        
 
+        console.log(serverError);
+        
         const formHasBeenSubmitted = this.state.hasBeenSubmitted;
         const emailError = this.state.errorMessages.email;
         const passwordError = this.state.errorMessages.password;
@@ -136,8 +155,8 @@ class AuthenticationForm extends Component {
         
         return (
             <div className="d-flex flex-column align-items-center flex-grow-1 text-center">                
-                <h3 className="mb-4">{this.props.login ? "Login" : "Register"}</h3>
-                
+                <h3 className={`${this.props.login ? 'mb-2' : 'mb-4'}`}>{this.props.login ? "Login" : "Register"}</h3>
+                { this.props.login ? <span className="text-danger mb-2">{serverError}</span> : null }
                 <Form className="w-sm-100" onSubmit={this.onFormSubmit}>
                     <Form.Group controlId="formBasicEmail" className="mb-3">
                         <Form.Label>Email address:</Form.Label>
@@ -176,7 +195,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: ( email, password, login ) => dispatch(authActions.auth(email, password, login)) 
+        onAuth: ( email, password, login ) => dispatch(authActions.auth(email, password, login)),
+        onAuthPageRefresh: () => dispatch(authActions.clearError()) 
     }
 };
 
