@@ -33,7 +33,7 @@ class BurgerBuilder extends Component {
         this.setState({purchasing: false});
     }
 
-    puchaseContinueHandler = () => {
+    purchaseContinueHandler = () => {
         this.props.onInitPurchase();
         this.props.history.push('/checkout');
     }
@@ -83,7 +83,7 @@ class BurgerBuilder extends Component {
             ingredients={this.props.ingredients}
             price={this.props.price}
             purchaseCancelled={this.puchaseCancelHandler}
-            purchaseContinued={this.puchaseContinueHandler}/>;
+            purchaseContinued={this.purchaseContinueHandler}/>;
         }
 
         return (
