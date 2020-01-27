@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import * as validators from '../../helpers/validators';
 import * as constants from '../../helpers/constants';
 import * as errorMessages from '../../helpers/errorMessages';
@@ -131,13 +132,16 @@ class AuthenticationForm extends Component {
             //ADD SPINNER
         }
 
+        let authRedirect = null;
+        if (this.props.isAuthenticated) {
+            authRedirect = <Redirect to="/"/>;
+        }
+
         let serverError = this.props.error;
         if (serverError && serverError.message) {            
             serverError = serverError.message;                       
         }
 
-        console.log(serverError);
-        
         const formHasBeenSubmitted = this.state.hasBeenSubmitted;
         const emailError = this.state.errorMessages.email;
         const passwordError = this.state.errorMessages.password;
@@ -154,7 +158,8 @@ class AuthenticationForm extends Component {
         );
         
         return (
-            <div className="d-flex flex-column align-items-center flex-grow-1 text-center">                
+            <div className="d-flex flex-column align-items-center flex-grow-1 text-center">    
+                {authRedirect}            
                 <h3 className={`${this.props.login ? 'mb-2' : 'mb-4'}`}>{this.props.login ? "Login" : "Register"}</h3>
                 { this.props.login ? <span className="text-danger mb-2">{serverError}</span> : null }
                 <Form className="w-sm-100" onSubmit={this.onFormSubmit}>

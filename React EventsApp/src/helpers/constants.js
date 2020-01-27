@@ -1,24 +1,17 @@
-const PASSWORD_MIN_LENGTH = 6;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const REGISTER_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
-const LOGIN_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
-const GET_USER_DATA_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
+export const PASSWORD_MIN_LENGTH = 6;
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const REGISTER_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
+export const LOGIN_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
+export const GET_USER_DATA_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos';
+export const USER_THEME_URL = 'https://eventsapp-4d16f.firebaseio.com/userThemes';
 
-const DEFAULT_THEME = 'dark';
-const BLUE_THEME = 'primary';
-const GREEN_THEME = 'success';
-const RED_THEME = 'danger';
-const GRAY_THEME = 'secondary';
-const LIGHT_BLUE_THEME = 'info';
+export const DEFAULT_THEME = 'dark';
+export const BLUE_THEME = 'primary';
+export const GREEN_THEME = 'success';
+export const RED_THEME = 'danger';
+export const GRAY_THEME = 'secondary';
+export const LIGHT_BLUE_THEME = 'info';
 
-const THEMES_ARRAY = [DEFAULT_THEME, BLUE_THEME, GREEN_THEME, RED_THEME, GRAY_THEME, LIGHT_BLUE_THEME];
+export const THEMES_ARRAY = [DEFAULT_THEME, BLUE_THEME, GREEN_THEME, RED_THEME, GRAY_THEME, LIGHT_BLUE_THEME];
 
-export {
-    PASSWORD_MIN_LENGTH,
-    EMAIL_REGEX,
-    REGISTER_URL,
-    LOGIN_URL,
-    GET_USER_DATA_URL,
-    DEFAULT_THEME,
-    THEMES_ARRAY
-};
+
