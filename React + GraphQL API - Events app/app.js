@@ -36,7 +36,8 @@ app.use(
 
 mongoose
   .connect(
-    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster1-sdega.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
+    "mongodb+srv://volen:12345@cluster1-sdega.mongodb.net/events-react-graphql?retryWrites=true&w=majority",
+    // `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster1-sdega.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true
