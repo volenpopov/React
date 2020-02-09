@@ -7,17 +7,18 @@ import { DEFAULT_THEME } from './helpers/constants';
 import Navbar from './components/Navigation/Navbar';
 import Footer from './components/Footer/Footer';
 import AuthenticationForm from './components/Forms/AuthenticationForm';
+import HomeGuest from './pages/Home/HomeGuest';
 import * as actions from "./store/actions/auth";
 import * as constants from "./helpers/constants";
 
 class App extends Component {
   state = { theme: DEFAULT_THEME };
 
-  componentDidMount = () => {    
+  componentDidMount() {    
     this.props.onTryAutoSignup();     
   }
 
-  componentDidUpdate = (prevProps, prevState) => {    
+  componentDidUpdate(prevProps, prevState) {    
     if (this.props.userId && prevState.theme === this.state.theme) {    
       axios.get(constants.USER_THEME_URL + `/${this.props.userId}.json`)
         .then(response => {
@@ -42,15 +43,17 @@ class App extends Component {
   }
 
   render() {
+    const { isAuthenticated } = this.props;
+
     return (
       <div className="vw-100 vh-100 d-flex flex-column">
         <ThemeContext.Provider value={{ themeColor: this.state.theme, switchTheme: this.switchThemeHandler}}>
-          <Navbar authenticated={this.props.isAuthenticated}/>
+          <Navbar authenticated={isAuthenticated}/>
           <div className="d-flex align-items-center flex-grow-1">
             <Switch>
               <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
-              {/* <Route path="/" component={}/> */}
+              <Route path="/" exact component={isAuthenticated ? null : HomeGuest}/>
             </Switch>
           </div>
           <Footer/>

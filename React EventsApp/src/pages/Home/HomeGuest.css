@@ -1,0 +1,13 @@
+.homeGuestContainer {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.homeGuestContainer p:first-child {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.homeGuestContainer p:last-child {
+    font-size: 1.4rem;
+}
