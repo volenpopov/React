@@ -8,6 +8,6 @@
     font-weight: bold;
 }
 
-.homeGuestContainer p:last-child {
+.homeGuestContainer p:nth-child(2) {
     font-size: 1.4rem;
 }
