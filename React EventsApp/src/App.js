@@ -8,23 +8,19 @@ import Navbar from './components/Navigation/Navbar';
 import Footer from './components/Footer/Footer';
 import AuthenticationForm from './components/Forms/AuthenticationForm';
 import HomeGuest from './pages/Home/HomeGuest';
+import Events from './pages/Events/Events';
 import * as actions from "./store/actions/auth";
 import * as constants from "./helpers/constants";
 
 class App extends Component {
-  state = { theme: DEFAULT_THEME, themeVerified: false };
+  state = { theme: DEFAULT_THEME };
 
   componentDidMount() {    
     this.props.onTryAutoSignup();     
   }
 
   componentDidUpdate(prevProps, prevState) {   
-    console.log("App componentDidUpdate");
-    console.log(!this.state.themeVerified);
-
-    if (this.props.userId && prevState.theme === this.state.theme && !this.state.themeVerified) {   
-      console.log("SENDING REQUEST TO CHECK USER THEME");
-       
+    if (!prevProps.userId && this.props.userId && prevState.theme === this.state.theme) {          
       axios.get(constants.USER_THEME_URL + `/${this.props.userId}.json`)
         .then(response => {
           const theme = response.data.theme;
@@ -60,6 +56,7 @@ class App extends Component {
             <Switch>
               <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
+              <Route path="/events" component={Events} />>
               <Route path="/" exact render={() => isAuthenticated ? <Redirect to="events"/> : <HomeGuest/>}/>
             </Switch>
           </div>
