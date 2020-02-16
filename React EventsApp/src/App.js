@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import ThemeContext from './context/theme-context';
 import { DEFAULT_THEME } from './helpers/constants';
@@ -12,20 +12,27 @@ import * as actions from "./store/actions/auth";
 import * as constants from "./helpers/constants";
 
 class App extends Component {
-  state = { theme: DEFAULT_THEME };
+  state = { theme: DEFAULT_THEME, themeVerified: false };
 
   componentDidMount() {    
     this.props.onTryAutoSignup();     
   }
 
-  componentDidUpdate(prevProps, prevState) {    
-    if (this.props.userId && prevState.theme === this.state.theme) {    
+  componentDidUpdate(prevProps, prevState) {   
+    console.log("App componentDidUpdate");
+    console.log(!this.state.themeVerified);
+
+    if (this.props.userId && prevState.theme === this.state.theme && !this.state.themeVerified) {   
+      console.log("SENDING REQUEST TO CHECK USER THEME");
+       
       axios.get(constants.USER_THEME_URL + `/${this.props.userId}.json`)
         .then(response => {
-          const theme = response.data.theme;                          
-          
-          if (theme !== this.state.theme) {
-            this.setState({ theme });
+          const theme = response.data.theme;
+
+          if (theme !== this.state.theme) {            
+            this.setState({ theme, themeVerified: true });
+          } else {
+            this.setState({ themeVerified: true });
           }
         })
         .catch(error => {
@@ -53,7 +60,7 @@ class App extends Component {
             <Switch>
               <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
-              <Route path="/" exact component={isAuthenticated ? null : HomeGuest}/>
+              <Route path="/" exact render={() => isAuthenticated ? <Redirect to="events"/> : <HomeGuest/>}/>
             </Switch>
           </div>
           <Footer/>
