@@ -31,7 +31,7 @@ const Navigationbar = props => {
   return (
     <Navbar collapseOnSelect expand="sm" bg={themeContext.themeColor} variant="dark">
       <Navbar.Brand>
-        EventsApp
+        <Link to="/" className="text-white">EventsApp</Link>        
     </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
