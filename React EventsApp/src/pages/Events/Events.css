@@ -7,9 +7,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 35%;
+    width: 40%;
     min-width: 350px;
-    border: 2px solid black;    
+    border: 1px solid black;    
 }
 
 .eventContainer:not(:last-child) {
@@ -25,3 +25,4 @@
     font-weight: 500;
     margin-bottom: 0;
 }
+

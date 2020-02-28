@@ -12,7 +12,11 @@ const HomeGuest = () => {
         <div className="homeGuestContainer">
             <p>Welcome to EventsApp!</p>
             <p>Please, create an account or log in, in order to create or book an event.</p>
-            <Link to="/events" className={`btn btn-${themeContext.themeColor}`}>View Events</Link>
+            <Link 
+                to={{ pathname: "/events", state: {fromHomeGuest: true }}} 
+                className={`btn btn-${themeContext.themeColor}`}>
+                    View Events
+            </Link>
         </div>
     );
 };
