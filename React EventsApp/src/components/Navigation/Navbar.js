@@ -1,16 +1,16 @@
-import React, { Fragment, useContext } from 'react';
-import { connect } from 'react-redux';
-import { Navbar, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import ThemeContext from '../../context/theme-context';
-import * as actions from '../../store/actions/auth';
+import React, { Fragment, useContext } from "react";
+import { connect } from "react-redux";
+import { Navbar, Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import ThemeContext from "../../context/theme-context";
+import * as actions from "../../store/actions/auth";
 
 const Navigationbar = props => {
   const themeContext = useContext(ThemeContext);
 
   const navLinkStyle = {
-    fontSize: '1.25rem',
-    color: 'white'
+    fontSize: "1.25rem",
+    color: "white"
   };
   
   const headerMenu = (

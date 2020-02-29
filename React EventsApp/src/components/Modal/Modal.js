@@ -1,22 +1,26 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 
-import ThemeContext from '../../context/theme-context';
+import ThemeContext from "../../context/theme-context";
 
-import './Modal.css';
+import "./Modal.css";
 
 const Modal = props => {
     const themeContext = useContext(ThemeContext);
 
-    const { title, children, actionButtonText } = props;
+    const { title, children, actionButtonText, closeModal, onFormSubmit } = props;
 
     return (
         <div className="modalContainer">
             <h2 className={`title bg-${themeContext.themeColor}`}>{title}</h2>
-            <form>
+            <form className="p-3" onSubmit={(e) => e.preventDefault()}>
                 {children}
                 <div className="buttonContainer">
-                    <button className={`btn btn-${themeContext.themeColor}`}>Close</button>
-                    <button className={`btn btn-${themeContext.themeColor}`}>{actionButtonText}</button>
+                    <button 
+                        className={`btn btn-${themeContext.themeColor}`}
+                        onClick={closeModal}>Close</button>
+                    <button 
+                        className={`btn btn-${themeContext.themeColor}`}
+                        onClick={onFormSubmit}>{actionButtonText}</button>
                 </div>
             </form>
         </div>

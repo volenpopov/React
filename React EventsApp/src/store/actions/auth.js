@@ -1,11 +1,11 @@
-import axios from 'axios';
-import * as actionTypes from './actionTypes';
-import * as constants from '../../helpers/constants';
+import axios from "axios";
+import * as actionTypes from "./actionTypes";
+import * as constants from "../../helpers/constants";
 
 export const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('expirationTime');
-    localStorage.removeItem('userId');
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirationTime");
+    localStorage.removeItem("userId");
 
     return {
         type: actionTypes.AUTH_LOGOUT
@@ -48,9 +48,9 @@ export const auth = ( email, password, login ) => {
             .then(response => {
                 const expirationTime = new Date(new Date().getTime() + response.data.expiresIn * 1000);
 
-                localStorage.setItem('token', response.data.idToken);
-                localStorage.setItem('expirationTime', expirationTime);
-                localStorage.setItem('userId', response.data.localId);
+                localStorage.setItem("token", response.data.idToken);
+                localStorage.setItem("expirationTime", expirationTime);
+                localStorage.setItem("userId", response.data.localId);
 
                 dispatch(authSuccess(response.data.idToken, response.data.localId, email));
                 dispatch(checkAuthTimeout(response.data.expiresIn));                
@@ -65,9 +65,9 @@ export const authCheckState = () => {
     return dispatch => {
         dispatch(authStart());
         
-        const token = localStorage.getItem('token');
-        const expirationTime = new Date(localStorage.getItem('expirationTime'));
-        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem("token");
+        const expirationTime = new Date(localStorage.getItem("expirationTime"));
+        const userId = localStorage.getItem("userId");
 
         if (!token) {
             dispatch(logout());

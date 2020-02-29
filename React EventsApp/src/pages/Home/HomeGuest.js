@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 
-import ThemeContext from '../../context/theme-context';
+import ThemeContext from "../../context/theme-context";
 
-import './HomeGuest.css';
+import "./HomeGuest.css";
 
 const HomeGuest = () => {
     const themeContext = useContext(ThemeContext);

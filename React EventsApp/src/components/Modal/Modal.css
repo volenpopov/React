@@ -5,7 +5,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: white;
+    background: white;    
     z-index: 1;
 }
 
@@ -13,8 +13,18 @@
     font-size: 1.4rem;
     color: white;
     padding: 10px 0 10px 10px;
+    margin-bottom: 0;
 }
 
 .buttonContainer {
-    
+    display: flex;
+    justify-content: flex-end;
+}
+
+.buttonContainer button {
+    padding: 5px 25px;
+}
+
+.buttonContainer button:first-child {
+    margin-right: 15px;
 }

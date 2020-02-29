@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
-import ThemeContext from '../../context/theme-context';
-import themeIcon from '../../resources/themeIcon.png';
-import { THEMES_ARRAY } from '../../helpers/constants';
-import './Footer.css';
+import React, { useContext } from "react";
+import ThemeContext from "../../context/theme-context";
+import themeIcon from "../../resources/themeIcon.png";
+import { THEMES_ARRAY } from "../../helpers/constants";
+import "./Footer.css";
 
 const Footer = () => {
     const themeContext = useContext(ThemeContext);
@@ -10,7 +10,7 @@ const Footer = () => {
 
     return (
         <footer className={`bg-${themeContext.themeColor}`}>
-            <div className="d-flex justify-content-between align-items-center" style={{height: '54px'}}>
+            <div className="d-flex justify-content-between align-items-center" style={{height: "54px"}}>
                 <p className={`m-0 py-2 pl-3 text-white`}>EventsApp {currentYear}&reg;</p>
                 <div>
                     <p className="text-white d-inline">Theme </p>

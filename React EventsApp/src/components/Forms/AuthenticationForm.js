@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import * as validators from '../../helpers/validators';
-import * as constants from '../../helpers/constants';
-import * as errorMessages from '../../helpers/errorMessages';
-import { Form, Button } from 'react-bootstrap';
-import ThemeContext from '../../context/theme-context';
-import * as authActions from '../../store/actions/auth';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import * as validators from "../../helpers/validators";
+import * as constants from "../../helpers/constants";
+import * as errorMessages from "../../helpers/errorMessages";
+import { Form, Button } from "react-bootstrap";
+import ThemeContext from "../../context/theme-context";
+import * as authActions from "../../store/actions/auth";
 
 class AuthenticationForm extends Component {
     state = {
@@ -47,8 +47,8 @@ class AuthenticationForm extends Component {
 
         const { email, password, confirmPassword } = this.state;
 
-        const emailIsRequiredError = validators.isRequired('email')(email);        
-        const passwordIsRequiredError = validators.isRequired('password')(password);        
+        const emailIsRequiredError = validators.isRequired("email")(email);        
+        const passwordIsRequiredError = validators.isRequired("password")(password);        
     
         const emailError = emailIsRequiredError ? emailIsRequiredError : this.state.errorMessages.email;
         const passwordError = passwordIsRequiredError ? passwordIsRequiredError : this.state.errorMessages.password;
@@ -159,7 +159,7 @@ class AuthenticationForm extends Component {
         return (
             <div className="d-flex flex-column align-items-center flex-grow-1 text-center">    
                 {authRedirect}            
-                <h3 className={`${this.props.login ? 'mb-2' : 'mb-4'}`}>{this.props.login ? "Login" : "Register"}</h3>
+                <h3 className={`${this.props.login ? "mb-2" : "mb-4"}`}>{this.props.login ? "Login" : "Register"}</h3>
                 { this.props.login ? <span className="text-danger mb-2">{serverError}</span> : null }
                 <Form className="w-sm-100" onSubmit={this.onFormSubmit}>
                     <Form.Group controlId="formBasicEmail" className="mb-3">

@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
-import axios from './axios-eventsapp';
-import ThemeContext from './context/theme-context';
-import { DEFAULT_THEME } from './helpers/constants';
-import Navbar from './components/Navigation/Navbar';
-import Footer from './components/Footer/Footer';
-import AuthenticationForm from './components/Forms/AuthenticationForm';
-import HomeGuest from './pages/Home/HomeGuest';
-import Events from './pages/Events/Events';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Switch, Route, withRouter, Redirect } from "react-router-dom";
+import axios from "./axios-eventsapp";
+import ThemeContext from "./context/theme-context";
+import { DEFAULT_THEME } from "./helpers/constants";
+import Navbar from "./components/Navigation/Navbar";
+import Footer from "./components/Footer/Footer";
+import AuthenticationForm from "./components/Forms/AuthenticationForm";
+import HomeGuest from "./pages/Home/HomeGuest";
+import Events from "./pages/Events/Events";
 import * as actions from "./store/actions/auth";
 import * as constants from "./helpers/constants";
 
