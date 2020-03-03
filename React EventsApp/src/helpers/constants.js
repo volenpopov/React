@@ -5,6 +5,8 @@ export const LOGIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:sig
 export const GET_USER_DATA_URL = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos";
 export const USER_THEME_URL = "/userThemes";
 
+export const FIRESTORE_URL = "https://storage.googleapis.com/storage/v1";
+
 export const EVENT_TITLE_MIN_LENGTH = 3;
 export const EVENTS_URL = "/events";
 export const EVENT_IMAGE_INVALID_TYPE_ERROR = "Invalid file type";

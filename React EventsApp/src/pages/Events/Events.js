@@ -8,6 +8,7 @@ import Backdrop from "../../components/Backdrop/Backdrop";
 import Modal from "../../components/Modal/Modal";
 import * as validators from "../../helpers/validators";
 import * as constants from "../../helpers/constants";
+import getBase64 from "../../helpers/getBase64";
 
 import "./Events.css";
 
@@ -42,18 +43,20 @@ const Events = props => {
 
         axios.get(`${constants.EVENTS_URL}.json`)
             .then(response => {
-                if (fromHomeGuest) {
-                    fetchedEvents = Object.keys(response.data)
-                        .map(key => ({ id: key, ...response.data[key] }))
+                const data = { response };
+
+                if (fromHomeGuest && data) {
+                    fetchedEvents = Object.keys(data)
+                        .map(key => ({ id: key, ...data[key] }))
                         .filter(event => {
                             const eventDate = new Date(event.date);
                             const eventDateNumber = Date.parse(eventDate);
 
                             return currentDateNumber <= eventDateNumber;
                         })
-                } else if (props.userId) {
-                    fetchedEvents = Object.keys(response.data)
-                        .map(key => ({ id: key, ...response.data[key] }))
+                } else if (props.userId && data) {
+                    fetchedEvents = Object.keys(data)
+                        .map(key => ({ id: key, ...data[key] }))
                         .filter(event => {
                             const eventDate = new Date(event.date);                            
                             const eventDateNumber = Date.parse(eventDate);
@@ -75,17 +78,7 @@ const Events = props => {
         setShowCreateModal(false);
     };
 
-    const onFileSelect = () => {
-        const fileInfo = imageRef.current.files[0];
-        
-        if (fileInfo.type.substring(0, 5) !== "image") {
-            setErrorMessages({ 
-                ...errorMessages,    
-                image: constants.EVENT_IMAGE_INVALID_TYPE_ERROR 
-            });
-        } else {
-            setErrorMessages({ ...errorMessages, image: null });
-        }                
+    const onFileSelect = () => {                                       
     };
 
     const onCreateEvent = () => {
@@ -104,20 +97,42 @@ const Events = props => {
             ? null 
             : "Invalid price"
 
-        setErrorMessages({
+        const file = imageRef.current.files[0];                
+        let fileTypeError = null;            
+
+        if (file) {
+            if (file.type.substring(0, 5) !== "image") {
+                fileTypeError = constants.EVENT_IMAGE_INVALID_TYPE_ERROR; 
+            }            
+        }
+
+        const errors = {
+            ...errorMessages,
             title: titleRequiredError || titleMinLengthError || titleStringValidityError,            
             price: priceValidityError,
             date: isNaN(Date.parse(date)) ? "Invalid date" : null,
-            description: description.length > 400 ? "Description has a max length of 400 characters" : null
-        });
-
-        if (Object.keys(errorMessages).every(key => !errorMessages[key])) {
+            description: description.length > 400 ? "Description has a max length of 400 characters" : null,
+            image: fileTypeError
+        };
+                
+        if (Object.keys(errors).every(key => !errors[key])) {
             const event = { title, price, date, description, creator: props.userId };
 
-            axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, event)
-                .then(() => hideModal(true))
-                .catch(error => console.log(error));
+            if (file) {
+                getBase64(file)
+                    .then(imageBase64 => {
+                        axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, { ...event, image: imageBase64 });                            
+                    })
+                    .then(() => hideModal(true))
+                    .catch(error => console.log(error));
+            } else {
+                axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, event)                          
+                    .then(() => hideModal(true))
+                    .catch(error => console.log(error));
+            }
         };
+
+        setErrorMessages(errors);
     }
 
     const createEventDiv = (
