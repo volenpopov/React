@@ -6,7 +6,8 @@ export const GET_USER_DATA_URL = "https://identitytoolkit.googleapis.com/v1/acco
 export const USER_THEME_URL = "/userThemes";
 
 export const EVENT_TITLE_MIN_LENGTH = 3;
-export const EVENTS_URL = "/events"
+export const EVENTS_URL = "/events";
+export const EVENT_IMAGE_INVALID_TYPE_ERROR = "Invalid file type";
 
 export const DEFAULT_THEME = "dark";
 export const BLUE_THEME = "primary";
