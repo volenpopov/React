@@ -7,7 +7,7 @@ import "./Modal.css";
 const Modal = props => {
     const themeContext = useContext(ThemeContext);
 
-    const { title, children, actionButtonText, closeModal, onFormSubmit } = props;
+    const { title, children, actionButtonText, closeModal, onFormSubmit, authenticated } = props;
 
     return (
         <div className="modalContainer">
@@ -20,7 +20,8 @@ const Modal = props => {
                         onClick={closeModal}>Close</button>
                     <button 
                         className={`btn btn-${themeContext.themeColor}`}
-                        onClick={onFormSubmit}>{actionButtonText}</button>
+                        onClick={onFormSubmit}
+                        disabled={!authenticated}>{actionButtonText}</button>
                 </div>
             </form>
         </div>

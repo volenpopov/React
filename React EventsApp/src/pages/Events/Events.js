@@ -16,7 +16,9 @@ const Events = props => {
     const themeContext = useContext(ThemeContext);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
+
     const [events, setEvents] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
     const [errorMessages, setErrorMessages] = useState({
         title: null,
@@ -32,54 +34,45 @@ const Events = props => {
     const descriptionRef = useRef(null);
     const imageRef = useRef(null);
 
-    useEffect(() => {
+    useEffect(() => {        
         const fromHomeGuest = props.location.state
             ? props.location.state.fromHomeGuest
             : null;
 
-        const currentDateNumber = Date.parse((new Date().toUTCString()));
-        
         let fetchedEvents = [];
 
         axios.get(`${constants.EVENTS_URL}.json`)
             .then(response => {
-                const data = { response };
+                const data = response.data;
+                
+                if (data) {
+                    const currentDateNumber = Date.parse(new Date());
 
-                if (fromHomeGuest && data) {
-                    fetchedEvents = Object.keys(data)
-                        .map(key => ({ id: key, ...data[key] }))
-                        .filter(event => {
-                            const eventDate = new Date(event.date);
-                            const eventDateNumber = Date.parse(eventDate);
-
-                            return currentDateNumber <= eventDateNumber;
-                        })
-                } else if (props.userId && data) {
                     fetchedEvents = Object.keys(data)
                         .map(key => ({ id: key, ...data[key] }))
                         .filter(event => {
                             const eventDate = new Date(event.date);                            
                             const eventDateNumber = Date.parse(eventDate);
 
-                            return event.creator !== props.userId && currentDateNumber <= eventDateNumber;
-                        });
-                }                     
-                
-                setEvents([ ...fetchedEvents ]);
+                            if (fromHomeGuest) {                                      
+                                return currentDateNumber <= eventDateNumber;
+                            } else if (props.userId) {                                
+                                return event.creator !== props.userId && currentDateNumber <= eventDateNumber;
+                            }
+                            
+                            return false;
+                        });                                   
+                                
+                    setEvents([...fetchedEvents]);
+                }                
             })
             .catch(error => console.log(error));        
-    }, [props.userId]);
+    }, [props.userId, props.location.state]);
 
-    const showModal = () => {
-        setShowCreateModal(true);        
-    };
-
-    const hideModal = () => {
-        setShowCreateModal(false);
-    };
-
-    const onFileSelect = () => {                                       
-    };
+    const onSetSelectedEventHandler = eventId => {
+        const event = events.find(event => event.id === eventId);
+        setSelectedEvent(event);
+    }
 
     const onCreateEvent = () => {
         const title = titleRef.current.value; 
@@ -123,11 +116,11 @@ const Events = props => {
                     .then(imageBase64 => {
                         axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, { ...event, image: imageBase64 });                            
                     })
-                    .then(() => hideModal(true))
+                    .then(() => setShowCreateModal(false))
                     .catch(error => console.log(error));
             } else {
                 axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, event)                          
-                    .then(() => hideModal(true))
+                    .then(() => setShowCreateModal(false))
                     .catch(error => console.log(error));
             }
         };
@@ -140,7 +133,7 @@ const Events = props => {
             <p>Share your own Events!</p>
             <button 
                 className={`btn btn-${themeContext.themeColor}`}
-                onClick={showModal}>
+                onClick={() => setShowCreateModal(true)}>
                     Create Event
             </button>
         </div>
@@ -151,7 +144,8 @@ const Events = props => {
             title="Create Event" 
             actionButtonText="Create"
             onFormSubmit={onCreateEvent}
-            closeModal={hideModal}>            
+            authenticated={props.isAuthenticated}
+            closeModal={() => setShowCreateModal(false)}>            
                 <Form.Group controlId="formBasicTitle" className="mb-0">
                     <Form.Label>Title:</Form.Label>
                     <Form.Control type="text" name="title" ref={titleRef}/>
@@ -183,12 +177,31 @@ const Events = props => {
                 <Form.Group controlId="formBasicImage" className="d-flex flex-column">
                     <div className="d-flex flex-row">
                         <Form.Label className="mr-2">Image:</Form.Label>
-                        <Form.Control as="input" type="file" accept="image/*"  className="d-block w-75" onChange={onFileSelect} ref={imageRef}/>
+                        <Form.Control as="input" type="file" accept="image/*"  className="d-block w-75" ref={imageRef}/>
                     </div>                    
                     <span className="text-danger ml-1">
                         {errorMessages.image ? errorMessages.image : null}
                     </span>
                 </Form.Group>
+        </Modal>
+    );
+
+    const detailsEventModal = (
+        <Modal
+            title="Details" 
+            actionButtonText="Book"
+            onFormSubmit={onCreateEvent}
+            authenticated={props.isAuthenticated}
+            closeModal={() => setSelectedEvent(null)}>
+            {
+                selectedEvent
+                    ? (
+                        <h3 className="mb-3">{selectedEvent.title}</h3>
+                        
+                    )
+                    : null
+            }
+            
         </Modal>
     );
 
@@ -205,7 +218,9 @@ const Events = props => {
                     </p>
                 </div>
                 <div>
-                    <button className={`mr-3 btn btn-${themeContext.themeColor}`}>View Details</button>
+                    <button 
+                        className={`mr-3 btn btn-${themeContext.themeColor}`}
+                        onClick={() => onSetSelectedEventHandler(event.id)}>View Details</button>
                 </div>
             </div>
         );
@@ -213,10 +228,15 @@ const Events = props => {
 
     return (
         <Fragment>
-            {showCreateModal 
+            {showCreateModal || selectedEvent
                 ? <Fragment>
                     <Backdrop/>
-                    {createEventModal}
+                    {showCreateModal 
+                        ? createEventModal
+                        : selectedEvent
+                            ? detailsEventModal
+                            : null
+                    }
                 </Fragment> 
                 : null
             }
