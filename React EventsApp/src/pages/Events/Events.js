@@ -21,20 +21,22 @@ const Events = props => {
         title: null,
         price: null,
         date: null,
-        description: null
+        description: null,
+        image: null
     });
 
     const titleRef = useRef(null);
     const priceRef = useRef(null);
     const dateRef = useRef(null);
     const descriptionRef = useRef(null);
+    const imageRef = useRef(null);
 
     useEffect(() => {
         const fromHomeGuest = props.location.state
             ? props.location.state.fromHomeGuest
             : null;
 
-        //const currentDateNumber = Date.parse((new Date().toUTCString()));
+        const currentDateNumber = Date.parse((new Date().toUTCString()));
         
         let fetchedEvents = [];
 
@@ -43,17 +45,20 @@ const Events = props => {
                 if (fromHomeGuest) {
                     fetchedEvents = Object.keys(response.data)
                         .map(key => ({ id: key, ...response.data[key] }))
+                        .filter(event => {
+                            const eventDate = new Date(event.date);
+                            const eventDateNumber = Date.parse(eventDate);
+
+                            return currentDateNumber <= eventDateNumber;
+                        })
                 } else if (props.userId) {
                     fetchedEvents = Object.keys(response.data)
                         .map(key => ({ id: key, ...response.data[key] }))
                         .filter(event => {
-                            // const eventDate = new Date(event.date);
-                            // console.log("eventDate", eventDate);
-                            
-                            // const eventDateNumber = Date.parse(eventDate);
-                            // console.log("eventDateNumber", eventDateNumber);
+                            const eventDate = new Date(event.date);                            
+                            const eventDateNumber = Date.parse(eventDate);
 
-                            return event.creator !== props.userId;
+                            return event.creator !== props.userId && currentDateNumber <= eventDateNumber;
                         });
                 }                     
                 
@@ -68,6 +73,19 @@ const Events = props => {
 
     const hideModal = () => {
         setShowCreateModal(false);
+    };
+
+    const onFileSelect = () => {
+        const fileInfo = imageRef.current.files[0];
+        
+        if (fileInfo.type.substring(0, 5) !== "image") {
+            setErrorMessages({ 
+                ...errorMessages,    
+                image: constants.EVENT_IMAGE_INVALID_TYPE_ERROR 
+            });
+        } else {
+            setErrorMessages({ ...errorMessages, image: null });
+        }                
     };
 
     const onCreateEvent = () => {
@@ -119,43 +137,57 @@ const Events = props => {
             actionButtonText="Create"
             onFormSubmit={onCreateEvent}
             closeModal={hideModal}>            
-                <Form.Group controlId="formBasicTitle" className="mb-3">
+                <Form.Group controlId="formBasicTitle" className="mb-0">
                     <Form.Label>Title:</Form.Label>
                     <Form.Control type="text" name="title" ref={titleRef}/>
                     <span className="text-danger ml-1">
                         {errorMessages.title ? errorMessages.title : null}
                     </span>
                 </Form.Group>
-                <Form.Group controlId="formBasicPrice" className="mb-3">
+                <Form.Group controlId="formBasicPrice" className="mb-0">
                     <Form.Label>Price:</Form.Label>
                     <Form.Control type="text" name="price" ref={priceRef}/>
                     <span className="text-danger ml-1">
                         {errorMessages.price ? errorMessages.price : null}
                     </span>                    
                 </Form.Group>
-                <Form.Group controlId="formBasicDate" className="mb-3">
+                <Form.Group controlId="formBasicDate" className="mb-0">
                     <Form.Label>Date:</Form.Label>
                     <Form.Control type="datetime-local" name="date" ref={dateRef}/>
                     <span className="text-danger ml-1">
                         {errorMessages.date ? errorMessages.date : null}
                     </span>                    
-                </Form.Group>
-                <Form.Group controlId="formBasicDescription">
-                    <Form.Label>Description:</Form.Label>
+                </Form.Group>                
+                <Form.Group controlId="formBasicDescription" className="mb-0">
+                    <Form.Label className="d-inline">Description:</Form.Label>
                     <Form.Control as="textarea" rows="3" ref={descriptionRef}/>
                     <span className="text-danger ml-1">
                         {errorMessages.description ? errorMessages.description : null}
                     </span>
                 </Form.Group>
+                <Form.Group controlId="formBasicImage" className="d-flex flex-column">
+                    <div className="d-flex flex-row">
+                        <Form.Label className="mr-2">Image:</Form.Label>
+                        <Form.Control as="input" type="file" accept="image/*"  className="d-block w-75" onChange={onFileSelect} ref={imageRef}/>
+                    </div>                    
+                    <span className="text-danger ml-1">
+                        {errorMessages.image ? errorMessages.image : null}
+                    </span>
+                </Form.Group>
         </Modal>
     );
+
+    const dateOptions = { day: "2-digit", month: "2-digit", year: "numeric" };
 
     const parsedEvents = events.map(event => {
         return (
             <div className="eventContainer" key={event.id}>
                 <div className="d-flex flex-column align-items-center p-3">
                     <p className={`eventTitle `}>{event.title}</p>
-                    <p className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center`}>${(+event.price).toFixed(2)} - {new Date(event.date).toLocaleDateString()}</p>
+                    <p 
+                        className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center`}>
+                        ${(+event.price).toFixed(2)} - {new Date(event.date).toLocaleDateString(undefined, dateOptions)}
+                    </p>
                 </div>
                 <div>
                     <button className={`mr-3 btn btn-${themeContext.themeColor}`}>View Details</button>
