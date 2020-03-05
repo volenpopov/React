@@ -230,7 +230,7 @@ const Events = props => {
                     <p className={`eventTitle `}>{event.title}</p>
                     <p 
                         className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center`}>
-                        ${(+event.price).toFixed(2)} - {new Date(event.date).toLocaleDateString(undefined, dateOptions)}
+                        ${(+event.price).toFixed(2)} - {new Date(event.date).toLocaleDateString("en-GB", dateOptions)}
                     </p>
                 </div>
                 <div>
