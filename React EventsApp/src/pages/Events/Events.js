@@ -206,7 +206,7 @@ const Events = props => {
                                     <p className="eventDetails">${(+selectedEvent.price).toFixed(2)}</p>
                                 </div>
                                 <div className="w-50 d-flex justify-content-center align-items-center">
-                                    <img src="#" alt="EventPhoto" className="eventImage"/>
+                                    <img src={selectedEvent.image} alt="EventPhoto" className="eventImage"/>
                                 </div>
                             </div>
                             <p className="eventDescription">

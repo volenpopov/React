@@ -34,7 +34,7 @@
 .eventImage {
     margin: 0 auto;
     width: 90%;
-    height: 90%;
+    max-height: 175px;
     border: 2px solid black;
     border-radius: 10px;    
 }
