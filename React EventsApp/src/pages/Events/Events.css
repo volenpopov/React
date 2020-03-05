@@ -39,6 +39,10 @@
     border-radius: 10px;    
 }
 
+.eventImage:hover {
+    cursor: default;
+}
+
 .eventDescription {
     font-size: .95rem;
     max-height: 200px;
