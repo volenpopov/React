@@ -25,3 +25,21 @@
     font-weight: 500;
     margin-bottom: 0;
 }
+
+.eventDetails {
+    font-weight: 500;
+    font-size: 1.05rem;
+}
+
+.eventDescription {
+    font-size: .95rem;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.eventImage {
+    width: 90%;
+    height: 90%;
+    border: 2px solid black;
+    border-radius: 10px;    
+}

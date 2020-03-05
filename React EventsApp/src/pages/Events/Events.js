@@ -186,6 +186,8 @@ const Events = props => {
         </Modal>
     );
 
+    const dateOptions = { day: "2-digit", month: "2-digit", year: "numeric" };
+
     const detailsEventModal = (
         <Modal
             title="Details" 
@@ -196,17 +198,31 @@ const Events = props => {
             {
                 selectedEvent
                     ? (
-                        <h3 className="mb-3">{selectedEvent.title}</h3>
-                        
+                        <Fragment>
+                            <div className="d-flex justify-content-center mb-3">
+                                <div className="w-50">
+                                    <h3 className="mb-3">{selectedEvent.title}</h3>
+                                    <p className="eventDetails">{new Date(selectedEvent.date).toLocaleString("en-GB", { ...dateOptions, hour: '2-digit', minute: '2-digit' })}</p>
+                                    <p className="eventDetails">${(+selectedEvent.price).toFixed(2)}</p>
+                                </div>
+                                <div className="w-50 d-flex justify-content-center align-items-center">
+                                    <img src="#" alt="EventPhoto" className="eventImage"/>
+                                </div>
+                            </div>
+                            <p className="eventDescription">
+                                {selectedEvent.description
+                                    ? selectedEvent.description
+                                    : "No description"
+                                }
+                            </p>   
+                        </Fragment>                                                            
                     )
                     : null
             }
             
         </Modal>
     );
-
-    const dateOptions = { day: "2-digit", month: "2-digit", year: "numeric" };
-
+    
     const parsedEvents = events.map(event => {
         return (
             <div className="eventContainer" key={event.id}>
