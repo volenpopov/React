@@ -9,6 +9,7 @@ import Footer from "./components/Footer/Footer";
 import AuthenticationForm from "./components/Forms/AuthenticationForm";
 import HomeGuest from "./pages/Home/HomeGuest";
 import Events from "./pages/Events/Events";
+import UserEvents from "./pages/UserEvents/UserEvents";
 import * as actions from "./store/actions/auth";
 import * as constants from "./helpers/constants";
 
@@ -56,7 +57,8 @@ class App extends Component {
             <Switch>
               <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
-              <Route path="/events" component={Events} />>
+              <Route path="/your-events" component={UserEvents} />
+              <Route path="/events" component={Events} />
               <Route path="/" exact render={() => isAuthenticated ? <Redirect to="events"/> : <HomeGuest/>}/>
             </Switch>
           </div>
