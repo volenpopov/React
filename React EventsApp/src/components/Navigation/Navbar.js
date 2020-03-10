@@ -23,6 +23,7 @@ const Navigationbar = props => {
   const authenticatedHeaderMenu = (
     <Fragment>
       <p className="mr-0 mr-sm-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Welcome, <Link to="/profile" style={navLinkStyle}>{props.email}</Link>!</p>
+      <Link to="/your-events" className="mr-0 mr-sm-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Your Events</Link>
       <Link to="" className="mt-0 mt-sm-0 mb-2 mb-sm-0" onClick={props.onLogout} style={navLinkStyle}>Logout</Link>                
     </Fragment>  
   );
