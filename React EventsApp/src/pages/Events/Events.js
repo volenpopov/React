@@ -39,8 +39,6 @@ const Events = props => {
             ? props.location.state.fromHomeGuest
             : null;
 
-        let fetchedEvents = [];
-
         axios.get(`${constants.EVENTS_URL}.json`)
             .then(response => {
                 const data = response.data;
@@ -48,7 +46,7 @@ const Events = props => {
                 if (data) {
                     const currentDateNumber = Date.parse(new Date());
 
-                    fetchedEvents = Object.keys(data)
+                    const fetchedEvents = Object.keys(data)
                         .map(key => ({ id: key, ...data[key] }))
                         .filter(event => {
                             const eventDate = new Date(event.date);                            
