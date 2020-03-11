@@ -18,6 +18,7 @@ const Events = props => {
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const [events, setEvents] = useState([]);
+    const [userBookings, setUserBookings] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     const [errorMessages, setErrorMessages] = useState({
@@ -64,13 +65,30 @@ const Events = props => {
                     setEvents([...fetchedEvents]);
                 }                
             })
-            .catch(error => console.log(error));        
+            .catch(error => console.log(error));
+            
+            axios.get(`${constants.BOOKINGS_URL}.json`)
+                .then(response => {
+                    const data = response.data;
+
+                    if (data) {
+                        const fetchedUserBookings = Object.keys(data)
+                            .map(key => ({ id: key, ...data[key] }));
+                        
+                        setUserBookings(fetchedUserBookings);
+                    }
+                })
+                .catch(error => console.log(error));;
     }, [props.userId, props.location.state]);
 
     const onSetSelectedEventHandler = eventId => {
-        const event = events.find(event => event.id === eventId);
+        const event = { 
+            ...events.find(event => event.id === eventId), 
+            alreadyBooked: userBookings.length > 0 && userBookings.find(booking => booking.eventId === eventId) !== null
+        };
+
         setSelectedEvent(event);
-    }
+    };
 
     const onCreateEvent = () => {
         const title = titleRef.current.value; 
@@ -124,7 +142,17 @@ const Events = props => {
         };
 
         setErrorMessages(errors);
-    }
+    };
+
+    const onBookEvent = eventId => {   
+        const newBooking = { userId: props.userId, eventId };
+
+        if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
+            axios.post(`${constants.BOOKINGS_URL}.json`, newBooking)
+                .then(() => setUserBookings([...userBookings].push(newBooking)))
+                .catch(error => console.log(error));
+        }        
+    };
 
     const createEventDiv = (
         <div className="createEventContainer w-100 text-center mt-4">
@@ -189,8 +217,12 @@ const Events = props => {
     const detailsEventModal = (
         <Modal
             title="Details" 
-            actionButtonText="Book"
-            onFormSubmit={onCreateEvent}
+            actionButtonText={
+                selectedEvent 
+                    ? selectedEvent.alreadyBooked ? "Booked" : "Book" 
+                    : "Book"
+            }
+            onFormSubmit={() => onBookEvent(selectedEvent.title.toLowerCase())}
             authenticated={props.isAuthenticated}
             closeModal={() => setSelectedEvent(null)}>
             {
@@ -240,6 +272,8 @@ const Events = props => {
         );
     });
 
+    console.log(selectedEvent);
+    
     return (
         <Fragment>
             {showCreateModal || selectedEvent
