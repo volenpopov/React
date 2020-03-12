@@ -67,11 +67,11 @@ const Events = props => {
             })
             .catch(error => console.log(error));
             
-            axios.get(`${constants.BOOKINGS_URL}.json`)
+            axios.get(`${constants.BOOKINGS_URL}.json?orderBy="userId"&equalTo="${props.userId}"`)
                 .then(response => {
                     const data = response.data;
 
-                    if (data) {
+                    if (data) {                        
                         const fetchedUserBookings = Object.keys(data)
                             .map(key => ({ id: key, ...data[key] }));
                         
@@ -81,10 +81,10 @@ const Events = props => {
                 .catch(error => console.log(error));;
     }, [props.userId, props.location.state]);
 
-    const onSetSelectedEventHandler = eventId => {
+    const onSetSelectedEventHandler = eventId => {        
         const event = { 
             ...events.find(event => event.id === eventId), 
-            alreadyBooked: userBookings.length > 0 && userBookings.find(booking => booking.eventId === eventId) !== null
+            alreadyBooked: userBookings.find(booking => booking.eventId === eventId) !== undefined
         };
 
         setSelectedEvent(event);
@@ -144,12 +144,16 @@ const Events = props => {
         setErrorMessages(errors);
     };
 
-    const onBookEvent = eventId => {   
+    const onBookEvent = eventId => {  
+        setSelectedEvent(null);        
         const newBooking = { userId: props.userId, eventId };
 
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
             axios.post(`${constants.BOOKINGS_URL}.json`, newBooking)
-                .then(() => setUserBookings([...userBookings].push(newBooking)))
+                .then(() => {
+                    userBookings.push(newBooking);                    
+                    setUserBookings([...userBookings]);
+                })
                 .catch(error => console.log(error));
         }        
     };
@@ -248,8 +252,7 @@ const Events = props => {
                         </Fragment>                                                            
                     )
                     : null
-            }
-            
+            }            
         </Modal>
     );
     
@@ -271,8 +274,6 @@ const Events = props => {
             </div>
         );
     });
-
-    console.log(selectedEvent);
     
     return (
         <Fragment>
