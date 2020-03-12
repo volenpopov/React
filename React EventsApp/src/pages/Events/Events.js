@@ -150,10 +150,7 @@ const Events = props => {
 
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
             axios.post(`${constants.BOOKINGS_URL}.json`, newBooking)
-                .then(() => {
-                    userBookings.push(newBooking);                    
-                    setUserBookings([...userBookings]);
-                })
+                .then(() => setUserBookings([...userBookings, newBooking]))
                 .catch(error => console.log(error));
         }        
     };
