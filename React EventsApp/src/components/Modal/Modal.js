@@ -21,7 +21,7 @@ const Modal = props => {
                     <button 
                         className={`btn btn-${themeContext.themeColor}`}
                         onClick={onFormSubmit}
-                        disabled={!authenticated}>{actionButtonText}</button>
+                        disabled={!authenticated || actionButtonText === "Booked"}>{actionButtonText}</button>
                 </div>
             </form>
         </div>
