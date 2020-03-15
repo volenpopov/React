@@ -1,29 +1,6 @@
-.createEventContainer p, .allUpcomingEvents {
+.allUpcomingEvents {
     font-size: 1.5rem;
     font-weight: bold;
-}
-
-.eventContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 40%;
-    min-width: 350px;
-    border: 1px solid black;    
-}
-
-.eventContainer:not(:last-child) {
-    margin-bottom: 1rem;
-}
-
-.eventContainer p:nth-child(2) {
-    width: 150px;
-}
-
-.eventTitle {
-    font-size: 1.3rem;
-    font-weight: 500;
-    margin-bottom: 0;
 }
 
 .eventDetails {
