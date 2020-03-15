@@ -10,6 +10,7 @@ import AuthenticationForm from "./components/Forms/AuthenticationForm";
 import HomeGuest from "./pages/Home/HomeGuest";
 import Events from "./pages/Events/Events";
 import UserBookings from "./pages/Bookings/UserBookings";
+import UserProfile from "./pages/Profile/UserProfile";
 import * as actions from "./store/actions/auth";
 import * as constants from "./helpers/constants";
 
@@ -59,6 +60,7 @@ class App extends Component {
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
               <Route path="/bookings" component={UserBookings} />
               <Route path="/events" component={Events} />
+              <Route path="/profile" component={UserProfile} />
               <Route path="/" exact render={() => isAuthenticated ? <Redirect to="events"/> : <HomeGuest/>}/>
             </Switch>
           </div>
