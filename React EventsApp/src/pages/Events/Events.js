@@ -144,9 +144,14 @@ const Events = props => {
         setErrorMessages(errors);
     };
 
-    const onBookEvent = eventId => {  
-        setSelectedEvent(null);        
-        const newBooking = { userId: props.userId, eventId };
+    const BookEventHandler = eventId => {  
+        setSelectedEvent(null);  
+
+        const newBooking = { 
+            userId: props.userId, 
+            eventId, 
+            bookedAt: new Date() 
+        };
 
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
             axios.post(`${constants.BOOKINGS_URL}.json`, newBooking)
@@ -156,8 +161,8 @@ const Events = props => {
     };
 
     const createEventDiv = (
-        <div className="createEventContainer w-100 text-center mt-4">
-            <p>Share your own Events!</p>
+        <div className="pageHeaderContainer w-100 text-center mt-4">
+            <h1>Share your own Events!</h1>
             <button 
                 className={`btn btn-${themeContext.themeColor}`}
                 onClick={() => setShowCreateModal(true)}>
@@ -213,8 +218,6 @@ const Events = props => {
         </Modal>
     );
 
-    const dateOptions = { day: "2-digit", month: "2-digit", year: "numeric" };
-
     const detailsEventModal = (
         <Modal
             title="Details" 
@@ -223,7 +226,7 @@ const Events = props => {
                     ? selectedEvent.alreadyBooked ? "Booked" : "Book" 
                     : "Book"
             }
-            onFormSubmit={() => onBookEvent(selectedEvent.title.toLowerCase())}
+            onFormSubmit={() => BookEventHandler(selectedEvent.title.toLowerCase())}
             authenticated={props.isAuthenticated}
             closeModal={() => setSelectedEvent(null)}>
             {
@@ -233,7 +236,7 @@ const Events = props => {
                             <div className="d-flex justify-content-center mb-3">
                                 <div className="w-50">
                                     <h3 className="mb-3">{selectedEvent.title}</h3>
-                                    <p className="eventDetails">{new Date(selectedEvent.date).toLocaleString("en-GB", { ...dateOptions, hour: '2-digit', minute: '2-digit' })}</p>
+                                    <p className="eventDetails">{new Date(selectedEvent.date).toLocaleString("en-GB", { ...constants.DATE_OPTIONS, hour: '2-digit', minute: '2-digit' })}</p>
                                     <p className="eventDetails">${(+selectedEvent.price).toFixed(2)}</p>
                                 </div>
                                 <div className="w-50 d-flex justify-content-center align-items-center">
@@ -257,10 +260,10 @@ const Events = props => {
         return (
             <div className="eventContainer" key={event.id}>
                 <div className="d-flex flex-column align-items-center p-3">
-                    <p className={`eventTitle `}>{event.title}</p>
+                    <p className="eventTitle">{event.title}</p>
                     <p 
                         className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center`}>
-                        ${(+event.price).toFixed(2)} - {new Date(event.date).toLocaleDateString("en-GB", dateOptions)}
+                        ${(+event.price).toFixed(2)} - {new Date(event.date).toLocaleDateString("en-GB", constants.DATE_OPTIONS)}
                     </p>
                 </div>
                 <div>
