@@ -150,7 +150,7 @@ const Events = props => {
         const newBooking = { 
             userId: props.userId, 
             eventId, 
-            bookedAt: new Date() 
+            bookedOn: new Date() 
         };
 
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {

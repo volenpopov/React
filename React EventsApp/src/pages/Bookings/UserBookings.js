@@ -44,7 +44,7 @@ const UserBookings = props => {
                     <p 
                         className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center`}
                         style={{ width: "162px" }}>
-                        Booked on: {new Date(booking.bookedAt).toLocaleDateString("en-GB", constants.DATE_OPTIONS)}
+                        Booked on: {new Date(booking.bookedOn).toLocaleDateString("en-GB", constants.DATE_OPTIONS)}
                     </p>                    
                 </div>    
                 <div>
@@ -62,7 +62,7 @@ const UserBookings = props => {
         <div className="pageHeaderContainer w-100 align-self-start d-flex flex-column align-items-center text-center mt-5">
             <h1 className="mb-4">Your Bookings:</h1> 
             {parsedBookings}                      
-        </div>        
+        </div>          
     );
 };
 
