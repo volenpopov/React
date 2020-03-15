@@ -36,7 +36,7 @@ const UserBookings = props => {
             .catch(error => console.log(error));
     };
 
-    const parsedBookings = userBookings.map(booking => {                
+    const parsedBookings = userBookings.map(booking => {   
         return (
             <div className="eventContainer" key={booking.id}>
                 <div className="d-flex flex-column align-items-center p-3">
@@ -50,7 +50,7 @@ const UserBookings = props => {
                 <div>
                     <button 
                         className={`mr-3 btn btn-${themeContext.themeColor} px-sm-3 px-lg-4`}
-                        onClick={bookingId => cancelBookingHandler(booking.id)}>                        
+                        onClick={() => cancelBookingHandler(booking.id)}>                        
                         Cancel
                     </button>
                 </div>            
