@@ -10,35 +10,31 @@ const UserEvents = props => {
     const [userEvents, setUserEvents] = useState({});
         
     useEffect(() => {
-        axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`)
-        .then(response => {
-            const data = response.data;
-            
-            if (data) {
-                const userEvents = data;
+        const eventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
+        const bookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json`);
+
+        Promise.all([eventsRequest, bookingsRequest])
+            .then(([events, bookings]) => {
+                const userEvents = events.data;
+                const allBookings = bookings.data;
                 
-                axios.get(`${constants.BOOKINGS_URL}.json`)
-                    .then((response) => {
-                        const bookings = response.data;
+                if (userEvents) {
+                    Object.keys(allBookings).forEach(key => {
+                        const bookingEventId = allBookings[key].eventId;                                
                         
-                        Object.keys(bookings).forEach(key => {
-                            const bookingEventId = bookings[key].eventId;                                
-                            
-                            if (userEvents[bookingEventId]) {
-                                if (userEvents[bookingEventId].totalAttendees) {
-                                    userEvents[bookingEventId].totalAttendees++;
-                                } else {
-                                    userEvents[bookingEventId].totalAttendees = 1;
-                                }                                       
-                            };
-                        }); 
-                        
-                        setUserEvents({ ...userEvents });
-                    })
-                    .catch(error => console.log(error));
-            }                
-        })
-        .catch(error => console.log(error));
+                        if (userEvents[bookingEventId]) {
+                            if (userEvents[bookingEventId].totalAttendees) {
+                                userEvents[bookingEventId].totalAttendees++;
+                            } else {
+                                userEvents[bookingEventId].totalAttendees = 1;
+                            }                                       
+                        };
+                    });
+                    
+                    setUserEvents({ ...userEvents });
+                }                
+            })
+            .catch(error => console.log(error));        
     }, [props.userId]);
 
     const parsedEvents = Object.keys(userEvents).map(key => {
