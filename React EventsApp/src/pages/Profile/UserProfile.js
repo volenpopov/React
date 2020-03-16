@@ -10,10 +10,10 @@ const UserEvents = props => {
     const [userEvents, setUserEvents] = useState({});
         
     useEffect(() => {
-        const eventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
+        const userEventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
         const bookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json`);
 
-        Promise.all([eventsRequest, bookingsRequest])
+        Promise.all([userEventsRequest, bookingsRequest])
             .then(([events, bookings]) => {
                 const userEvents = events.data;
                 const allBookings = bookings.data;
