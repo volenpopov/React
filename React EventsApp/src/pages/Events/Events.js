@@ -41,15 +41,19 @@ const Events = props => {
             ? props.location.state.fromHomeGuest
             : null;
 
-        axios.get(`${constants.EVENTS_URL}.json`)
-            .then(response => {
-                const data = response.data;
-                
-                if (data) {
+        const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
+        const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?orderBy="userId"&equalTo="${props.userId}"`);
+
+        Promise.all([eventsRequest, userBookingsRequest])
+            .then(([events, bookings]) => {
+                const allEvents = events.data;
+                const userBookings = bookings.data;
+
+                if (allEvents) {
                     const currentDateNumber = Date.parse(new Date());
 
-                    const fetchedEvents = Object.keys(data)
-                        .map(key => ({ id: key, ...data[key] }))
+                    const fetchedEvents = Object.keys(allEvents)
+                        .map(key => ({ id: key, ...allEvents[key] }))
                         .filter(event => {
                             const eventDate = new Date(event.date);                            
                             const eventDateNumber = Date.parse(eventDate);
@@ -63,23 +67,17 @@ const Events = props => {
                             return false;
                         });                                   
                                 
-                    setEvents([...fetchedEvents]);
-                }                
-            })
-            .catch(error => console.log(error));
-            
-            axios.get(`${constants.BOOKINGS_URL}.json?orderBy="userId"&equalTo="${props.userId}"`)
-                .then(response => {
-                    const data = response.data;
+                    setEvents(fetchedEvents);
+                }
 
-                    if (data) {                        
-                        const fetchedUserBookings = Object.keys(data)
-                            .map(key => ({ id: key, ...data[key] }));
+                if (userBookings) {
+                    const fetchedUserBookings = Object.keys(userBookings)
+                            .map(key => ({ id: key, ...userBookings[key] }));
                         
-                        setUserBookings(fetchedUserBookings);
-                    }
-                })
-                .catch(error => console.log(error));;
+                    setUserBookings(fetchedUserBookings);
+                }
+            })
+            .catch(error => console.log(error));        
     }, [props.userId, props.location.state]);
 
     const onSetSelectedEventHandler = eventId => {        
