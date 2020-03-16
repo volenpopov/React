@@ -9,6 +9,7 @@ import Modal from "../../components/Modal/Modal";
 import * as validators from "../../helpers/validators";
 import * as constants from "../../helpers/constants";
 import getBase64 from "../../helpers/getBase64";
+import defaultImage from "../../resources/noimagefound.jpg";
 
 import "./Events.css";
 
@@ -240,7 +241,10 @@ const Events = props => {
                                     <p className="eventDetails">${(+selectedEvent.price).toFixed(2)}</p>
                                 </div>
                                 <div className="w-50 d-flex justify-content-center align-items-center">
-                                    <img src={selectedEvent.image} alt="EventPhoto" className="eventImage"/>
+                                    <img 
+                                        src={selectedEvent.image ? selectedEvent.image : defaultImage} 
+                                        alt="EventPhoto" 
+                                        className="eventImage"/>
                                 </div>
                             </div>
                             <p className="eventDescription">
