@@ -37,10 +37,6 @@ const Events = props => {
     const imageRef = useRef(null);
 
     useEffect(() => {        
-        const fromHomeGuest = props.location.state
-            ? props.location.state.fromHomeGuest
-            : null;
-
         const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
         const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?orderBy="userId"&equalTo="${props.userId}"`);
 
@@ -58,13 +54,11 @@ const Events = props => {
                             const eventDate = new Date(event.date);                            
                             const eventDateNumber = Date.parse(eventDate);
 
-                            if (fromHomeGuest) {                                      
-                                return currentDateNumber <= eventDateNumber;
-                            } else if (props.userId) {                                
+                            if (props.userId) {                                
                                 return event.creator !== props.userId && currentDateNumber <= eventDateNumber;
                             }
                             
-                            return false;
+                            return currentDateNumber <= eventDateNumber;
                         });                                   
                                 
                     setEvents(fetchedEvents);

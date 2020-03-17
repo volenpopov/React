@@ -13,7 +13,7 @@ const HomeGuest = () => {
             <p>Welcome to EventsApp!</p>
             <p>Please, create an account or log in, in order to create or book an event.</p>
             <Link 
-                to={{ pathname: "/events", state: {fromHomeGuest: true }}} 
+                to="/events" 
                 className={`btn btn-${themeContext.themeColor}`}>
                     View Events
             </Link>
