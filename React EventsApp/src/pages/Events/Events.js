@@ -235,7 +235,7 @@ const Events = props => {
                             <div className="d-flex justify-content-center mb-3">
                                 <div className="w-50">
                                     <h3 className="mb-3">{selectedEvent.title}</h3>
-                                    <p className="eventDetails">{new Date(selectedEvent.date).toLocaleString("en-GB", { ...constants.DATE_OPTIONS, hour: '2-digit', minute: '2-digit' })}</p>
+                                    <p className="eventDetails">{new Date(selectedEvent.date).toLocaleString("en-GB", constants.DATE_AND_TIME_OPTIONS)}</p>
                                     <p className="eventDetails">${(+selectedEvent.price).toFixed(2)}</p>
                                 </div>
                                 <div className="w-50 d-flex justify-content-center align-items-center">

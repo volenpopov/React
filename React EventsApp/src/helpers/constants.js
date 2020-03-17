@@ -6,6 +6,7 @@ export const GET_USER_DATA_URL = "https://identitytoolkit.googleapis.com/v1/acco
 export const USER_THEME_URL = "/userThemes";
 
 export const DATE_OPTIONS = { day: "2-digit", month: "2-digit", year: "numeric" };
+export const DATE_AND_TIME_OPTIONS = { ...DATE_OPTIONS, hour: '2-digit', minute: '2-digit' };
 
 export const FIRESTORE_URL = "https://storage.googleapis.com/storage/v1";
 
