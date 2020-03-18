@@ -61,7 +61,7 @@ const UserBookings = props => {
                         {`${booking.eventId} - ${new Date(booking.eventDate).toLocaleDateString("en-GB", constants.DATE_AND_TIME_OPTIONS)}`}
                     </p>
                     <p 
-                        className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center`}
+                        className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center align-self-start`}
                         style={{ width: "162px" }}>
                         Booked on: {new Date(booking.bookedOn).toLocaleDateString("en-GB", constants.DATE_OPTIONS)}
                     </p>                    
