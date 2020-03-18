@@ -1,0 +1,26 @@
+.navLinkStyle, .greetingMessage {
+    font-size: 1.25rem;
+    color: white
+}
+
+.userEmail {
+    color: white;
+    text-decoration: none;
+}
+
+.userEmail:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.navLinkStyle:hover, .activeNavButton {
+    background-color: white;
+    color: black;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.activeNavButton:hover {
+    color: black;    
+}
+

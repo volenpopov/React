@@ -1,30 +1,27 @@
 import React, { Fragment, useContext } from "react";
 import { connect } from "react-redux";
 import { Navbar, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import ThemeContext from "../../context/theme-context";
 import * as actions from "../../store/actions/auth";
 
+import "./Navbar.css";
+
 const Navigationbar = props => {
   const themeContext = useContext(ThemeContext);
-
-  const navLinkStyle = {
-    fontSize: "1.25rem",
-    color: "white"
-  };
   
   const headerMenu = (
     <Fragment>
-      <Link to="/login" className="mr-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Login</Link> 
-      <Link to="/register" style={navLinkStyle}>Register</Link> 
+      <NavLink to="/login" activeClassName="activeNavButton" className="navLinkStyle mr-2 mt-2 mt-sm-0 mb-2 mb-sm-0 px-2">Login</NavLink> 
+      <NavLink to="/register" activeClassName="activeNavButton" className="navLinkStyle px-2">Register</NavLink> 
     </Fragment> 
   );
 
   const authenticatedHeaderMenu = (
     <Fragment>
-      <p className="mr-0 mr-sm-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Welcome, <Link to="/profile" style={navLinkStyle}>{props.email}</Link>!</p>
-      <Link to="/bookings" className="mr-0 mr-sm-4 mt-2 mt-sm-0 mb-2 mb-sm-0" style={navLinkStyle}>Bookings</Link>
-      <Link to="" className="mt-0 mt-sm-0 mb-2 mb-sm-0" onClick={props.onLogout} style={navLinkStyle}>Logout</Link>                
+      <p className="greetingMessage mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Welcome, <NavLink to="/profile" activeClassName="activeNavButton" className="userEmail px-2">{props.email}!</NavLink></p>
+      <NavLink to="/bookings" activeClassName="activeNavButton" className="navLinkStyle px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Bookings</NavLink>
+      <NavLink to="/logout" activeClassName="activeNavButton" className="navLinkStyle px-2 mt-0 mt-sm-0 mb-2 mb-sm-0" onClick={props.onLogout}>Logout</NavLink>                
     </Fragment>  
   );
 
@@ -32,7 +29,7 @@ const Navigationbar = props => {
   return (
     <Navbar collapseOnSelect expand="sm" bg={themeContext.themeColor} variant="dark">
       <Navbar.Brand>
-        <Link to="/" className="text-white">EventsApp</Link>        
+        <NavLink to="/events" activeClassName="activeNavButton" className="navLinkStyle px-2">Home</NavLink>        
     </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
