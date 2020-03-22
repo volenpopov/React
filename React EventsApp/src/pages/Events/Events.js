@@ -127,7 +127,7 @@ const Events = props => {
             const event = { title, price, date, description, creator: props.userId };
 
             if (files.length) {
-                const imagesPromises = files.map(file => getBase64(file));
+                const imagesPromises = files.map(imageFile => getBase64(imageFile));
                 
                 Promise.all(imagesPromises)
                     .then(imagesBase64Array => {
