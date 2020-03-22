@@ -99,11 +99,12 @@ const Events = props => {
             ? null 
             : "Invalid price"
 
-        const file = imageRef.current.files[0];                
+        const files = Array.from(imageRef.current.files);    
+                    
         let fileTypeError = null;            
 
-        if (file) {
-            if (file.type.substring(0, 5) !== "image") {
+        if (files.length) {
+            if (files.some(file => file.type.substring(0, 5) !== "image")) {
                 fileTypeError = constants.EVENT_IMAGE_INVALID_TYPE_ERROR; 
             }            
         }
@@ -120,13 +121,15 @@ const Events = props => {
         if (Object.keys(errors).every(key => !errors[key])) {
             const event = { title, price, date, description, creator: props.userId };
 
-            if (file) {
-                getBase64(file)
-                    .then(imageBase64 => {
-                        axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, { ...event, image: imageBase64 });                            
+            if (files.length) {
+                const imagesPromises = files.map(file => getBase64(file));
+                
+                Promise.all(imagesPromises)
+                    .then(imagesBase64Array => {
+                        axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, { ...event, images: imagesBase64Array })
                     })
                     .then(() => setShowCreateModal(false))
-                    .catch(error => console.log(error));
+                    .catch(error => console.log(error));                                
             } else {
                 axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, event)                          
                     .then(() => setShowCreateModal(false))
@@ -202,7 +205,7 @@ const Events = props => {
                 <Form.Group controlId="formBasicImage" className="d-flex flex-column">
                     <div className="d-flex flex-row">
                         <Form.Label className="mr-2">Image:</Form.Label>
-                        <Form.Control as="input" type="file" accept="image/*"  className="d-block w-75" ref={imageRef}/>
+                        <Form.Control as="input" type="file" accept="image/*" multiple className="d-block w-75" ref={imageRef}/>
                     </div>                    
                     <span className="text-danger ml-1">
                         {errorMessages.image ? errorMessages.image : null}
