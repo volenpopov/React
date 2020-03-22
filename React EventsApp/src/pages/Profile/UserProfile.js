@@ -18,21 +18,22 @@ const UserEvents = props => {
             .then(([events, bookings]) => {
                 const userEvents = events.data;
                 const allBookings = bookings.data;
-                                
-                if (Object.keys(userEvents).length) {
-                    Object.keys(allBookings).forEach(key => {
-                        const bookingEventId = allBookings[key].eventId;                                
-                        
-                        if (userEvents[bookingEventId]) {
-                            if (userEvents[bookingEventId].totalAttendees) {
-                                userEvents[bookingEventId].totalAttendees++;
-                            } else {
-                                userEvents[bookingEventId].totalAttendees = 1;
-                            }                                       
-                        };
-                    });
-                    
-                    setUserEvents({ ...userEvents });
+                
+                if (userEvents && Object.keys(userEvents).length) {
+                    if (allBookings) {
+                        Object.keys(allBookings).forEach(key => {
+                            const bookingEventId = allBookings[key].eventId;                                
+                            
+                            if (userEvents[bookingEventId]) {
+                                if (userEvents[bookingEventId].totalAttendees) {
+                                    userEvents[bookingEventId].totalAttendees++;
+                                } else {
+                                    userEvents[bookingEventId].totalAttendees = 1;
+                                }                                       
+                            };
+                        });
+                    }      
+                    setUserEvents({ ...userEvents });              
                 } else {
                     setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
                 }                
