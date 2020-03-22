@@ -58,10 +58,11 @@ class App extends Component {
             <Switch>
               <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
+              <Route path="/logout" render={() => <Redirect to="/"/>}/>
               <Route path="/bookings" component={UserBookings} />
               <Route path="/events" component={Events} />
               <Route path="/profile" component={UserProfile} />
-              <Route path="/" exact render={() => isAuthenticated ? <Redirect to="events"/> : <HomeGuest/>}/>
+              <Route path="/" exact render={() => isAuthenticated ? <Redirect to="/events"/> : <HomeGuest/>}/>
             </Switch>
           </div>
           <Footer/>
