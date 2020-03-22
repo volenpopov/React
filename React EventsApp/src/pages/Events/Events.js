@@ -27,14 +27,14 @@ const Events = props => {
         price: null,
         date: null,
         description: null,
-        image: null
+        images: null
     });
 
     const titleRef = useRef(null);
     const priceRef = useRef(null);
     const dateRef = useRef(null);
     const descriptionRef = useRef(null);
-    const imageRef = useRef(null);
+    const imagesRef = useRef(null);
 
     useEffect(() => {        
         const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
@@ -75,7 +75,7 @@ const Events = props => {
     }, [props.userId, props.location.state]);
 
     const closeModalHandler = () => {
-        setErrorMessages({ title: null, price: null, date: null, description: null, image: null });
+        setErrorMessages({ title: null, price: null, date: null, description: null, images: null });
         setShowCreateModal(false);
     }
 
@@ -104,7 +104,7 @@ const Events = props => {
             ? null 
             : "Invalid price"
 
-        const files = Array.from(imageRef.current.files);    
+        const files = Array.from(imagesRef.current.files);    
                     
         let fileTypeError = null;            
 
@@ -120,7 +120,7 @@ const Events = props => {
             price: priceValidityError,
             date: isNaN(Date.parse(date)) ? "Invalid date" : null,
             description: description.length > 400 ? "Description has a max length of 400 characters" : null,
-            image: fileTypeError
+            images: fileTypeError
         };
                 
         if (Object.keys(errors).every(key => !errors[key])) {
@@ -207,13 +207,13 @@ const Events = props => {
                         {errorMessages.description ? errorMessages.description : null}
                     </span>
                 </Form.Group>
-                <Form.Group controlId="formBasicImage" className="d-flex flex-column">
+                <Form.Group controlId="formBasicImages" className="d-flex flex-column">
                     <div className="d-flex flex-row">
-                        <Form.Label className="mr-2">Image:</Form.Label>
-                        <Form.Control as="input" type="file" accept="image/*" multiple className="d-block w-75" ref={imageRef}/>
+                        <Form.Label className="mr-2">Images:</Form.Label>
+                        <Form.Control as="input" type="file" accept="image/*" multiple className="d-block w-75" ref={imagesRef}/>
                     </div>                    
                     <span className="text-danger ml-1">
-                        {errorMessages.image ? errorMessages.image : null}
+                        {errorMessages.images ? errorMessages.images : null}
                     </span>
                 </Form.Group>
         </Modal>
