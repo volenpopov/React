@@ -9,6 +9,7 @@ const UserBookings = props => {
     const themeContext = useContext(ThemeContext);
 
     const [userBookings, setUserBookings] = useState([]);
+    const [noBookingsMessage, setNoBookingsMessage] = useState(null);
     
     useEffect(() => {
         if (props.userId) {
@@ -20,21 +21,23 @@ const UserBookings = props => {
                     let userBookings = bookings.data;
                     const allEvents = events.data;
 
-                    if (userBookings) {
+                    if (Object.keys(userBookings).length) {
                         userBookings = Object.keys(userBookings)
-                        .map(key => {
-                            const bookedEventId = userBookings[key].eventId;
-                            const bookedEvent = allEvents[bookedEventId];
+                            .map(key => {
+                                const bookedEventId = userBookings[key].eventId;
+                                const bookedEvent = allEvents[bookedEventId];
 
-                            return { 
-                                id: key,
-                                ...userBookings[key],
-                                eventDate: bookedEvent.date
-                            };
-                        });
+                                return { 
+                                    id: key,
+                                    ...userBookings[key],
+                                    eventDate: bookedEvent.date
+                                };
+                            });
 
                         setUserBookings(userBookings);
-                    }                
+                    } else {
+                        setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
+                    }             
                 })
                 .catch(error => console.log(error));
         }
@@ -44,12 +47,19 @@ const UserBookings = props => {
         axios.delete(`${constants.BOOKINGS_URL}/${bookingId}.json`)
             .then(() => {
                 const updatedUserBookings = userBookings.filter(booking => booking.id !== bookingId);
-                setUserBookings(updatedUserBookings);
+
+                setUserBookings(updatedUserBookings);    
+                
+                if (!updatedUserBookings.length) {
+                    setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
+                }
             })
             .catch(error => console.log(error));
     };
 
     const currentDateNumber = Date.parse(new Date());
+
+    const noBookings = <p style={{ fontSize: "1.3rem" }}>{noBookingsMessage}</p>;
 
     const parsedBookings = userBookings.map(booking => {
         const eventDateNumber = Date.parse(booking.eventDate);
@@ -77,13 +87,11 @@ const UserBookings = props => {
             </div>  
         );
     });
-
-    console.log(userBookings);
     
     return (
         <div className="pageHeaderContainer w-100 align-self-start d-flex flex-column align-items-center text-center mt-5">
             <h1 className="mb-4">Your Bookings:</h1> 
-            {parsedBookings}                      
+            {parsedBookings.length ? parsedBookings : noBookings}
         </div>          
     );
 };
