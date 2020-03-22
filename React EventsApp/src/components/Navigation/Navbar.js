@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from "react";
 import { connect } from "react-redux";
 import { Navbar, Nav } from "react-bootstrap";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import ThemeContext from "../../context/theme-context";
 import * as actions from "../../store/actions/auth";
 
