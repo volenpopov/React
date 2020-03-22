@@ -54,7 +54,7 @@ class App extends Component {
       <div className="vw-100 vh-100 d-flex flex-column">
         <ThemeContext.Provider value={{ themeColor: this.state.theme, switchTheme: this.switchThemeHandler}}>
           <Navbar authenticated={isAuthenticated}/>
-          <div className="d-flex align-items-center flex-grow-1 flex-wrap">
+          <div className="d-flex align-items-center flex-grow-1 flex-wrap" style={{ overflowY: "scroll" }}>
             <Switch>
               <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
