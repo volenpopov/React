@@ -74,6 +74,11 @@ const Events = props => {
             .catch(error => console.log(error));        
     }, [props.userId, props.location.state]);
 
+    const closeModalHandler = () => {
+        setErrorMessages({ title: null, price: null, date: null, description: null, image: null });
+        setShowCreateModal(false);
+    }
+
     const onSetSelectedEventHandler = eventId => {        
         const event = { 
             ...events.find(event => event.id === eventId), 
@@ -173,7 +178,7 @@ const Events = props => {
             actionButtonText="Create"
             onFormSubmit={onCreateEvent}
             authenticated={props.isAuthenticated}
-            closeModal={() => setShowCreateModal(false)}>            
+            closeModal={closeModalHandler}>            
                 <Form.Group controlId="formBasicTitle" className="mb-0">
                     <Form.Label>Title:</Form.Label>
                     <Form.Control type="text" name="title" ref={titleRef}/>
