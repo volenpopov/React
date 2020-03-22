@@ -19,9 +19,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 40%;
+  width: 100%;
   min-width: 350px;
-  border: 1px solid black;    
+  border: 1px solid black; 
 }
 
 .eventContainer:not(:last-child) {

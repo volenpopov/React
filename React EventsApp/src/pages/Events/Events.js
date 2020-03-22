@@ -292,9 +292,9 @@ const Events = props => {
                 : null
             }
             {props.isAuthenticated ? createEventDiv : null}
-            <div className="w-100 mt-4" style={{height: "75%"}}>
+            <div className="w-100 mt-4 mb-4">
                 <p className="allUpcomingEvents text-center">Upcoming Events:</p>
-                <div className="flex-grow-1 d-flex flex-column align-items-center">
+                <div className="parsedItemsContainer">
                     {parsedEvents}
                 </div>
             </div>                        

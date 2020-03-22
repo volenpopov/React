@@ -91,7 +91,9 @@ const UserBookings = props => {
     return (
         <div className="pageHeaderContainer w-100 align-self-start d-flex flex-column align-items-center text-center mt-5">
             <h1 className="mb-4">Your Bookings:</h1> 
-            {parsedBookings.length ? parsedBookings : noBookings}
+            <div className="parsedItemsContainer">
+                {parsedBookings.length ? parsedBookings : noBookings}
+            </div>            
         </div>          
     );
 };

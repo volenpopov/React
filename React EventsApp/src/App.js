@@ -51,10 +51,10 @@ class App extends Component {
     const { isAuthenticated } = this.props;
 
     return (
-      <div className="vw-100 vh-100 d-flex flex-column">
+      <div className="w-100 vh-100 d-flex flex-column">
         <ThemeContext.Provider value={{ themeColor: this.state.theme, switchTheme: this.switchThemeHandler}}>
           <Navbar authenticated={isAuthenticated}/>
-          <div className="d-flex align-items-center flex-grow-1 flex-wrap" style={{ overflowY: "scroll" }}>
+          <div className="d-flex align-items-center flex-grow-1 flex-wrap" style={{ height: "85%" }}>
             <Switch>
               <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
