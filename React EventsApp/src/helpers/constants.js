@@ -13,6 +13,7 @@ export const FIRESTORE_URL = "https://storage.googleapis.com/storage/v1";
 export const EVENT_TITLE_MIN_LENGTH = 3;
 export const EVENTS_URL = "/events";
 export const EVENT_IMAGE_INVALID_TYPE_ERROR = "Invalid file type";
+export const NO_EVENTS_MESSAGE = "You don't have any events";
 
 export const BOOKINGS_URL = "/bookings";
 
