@@ -8,6 +8,7 @@ import "./UserProfile.css";
 
 const UserEvents = props => {
     const [userEvents, setUserEvents] = useState({});
+    const [noEventsMessage, setNoEventsMessage] = useState(null);
         
     useEffect(() => {
         const userEventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
@@ -17,8 +18,8 @@ const UserEvents = props => {
             .then(([events, bookings]) => {
                 const userEvents = events.data;
                 const allBookings = bookings.data;
-                
-                if (userEvents) {
+                                
+                if (Object.keys(userEvents).length) {
                     Object.keys(allBookings).forEach(key => {
                         const bookingEventId = allBookings[key].eventId;                                
                         
@@ -32,10 +33,14 @@ const UserEvents = props => {
                     });
                     
                     setUserEvents({ ...userEvents });
+                } else {
+                    setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
                 }                
             })
             .catch(error => console.log(error));        
     }, [props.userId]);
+
+    const noEvents = <p style={{ fontSize: "1.3rem" }}>{noEventsMessage}</p>;
 
     const parsedEvents = Object.keys(userEvents).map(key => {
         const event = userEvents[key];
@@ -56,7 +61,7 @@ const UserEvents = props => {
     return (
         <div className="pageHeaderContainer w-100 align-self-start d-flex flex-column align-items-center text-center mt-5">
             <h1 className="mb-4">Your Events:</h1> 
-            {parsedEvents}                 
+            {parsedEvents.length ? parsedEvents : noEvents}                 
         </div> 
     );        
 }
