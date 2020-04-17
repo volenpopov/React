@@ -46,9 +46,9 @@ const UserEvents = props => {
     const parsedEvents = Object.keys(userEvents).map(key => {
         const event = userEvents[key];
         const attendees = event.totalAttendees ? event.totalAttendees : 0;
-
+        
         return (
-            <div className="eventContainer" key={event.id}>
+            <div key={key} className="eventContainer">
                 <div className="d-flex flex-column align-items-center p-3">
                     <p className="eventTitle text-capitalize">{event.title}</p>                                           
                 </div>
