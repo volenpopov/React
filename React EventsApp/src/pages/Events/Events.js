@@ -45,10 +45,12 @@ const Events = props => {
                 const allEvents = events.data;
                 const userBookings = bookings.data;
 
-                if (allEvents) {
+                const allEventsKeys = Object.keys(allEvents);
+
+                if (allEventsKeys.length) {
                     const currentDateNumber = Date.parse(new Date());
 
-                    const fetchedEvents = Object.keys(allEvents)
+                    const fetchedEvents = allEventsKeys
                         .map(key => ({ id: key, ...allEvents[key] }))
                         .filter(event => {
                             const eventDate = new Date(event.date);                            
@@ -64,8 +66,10 @@ const Events = props => {
                     setEvents(fetchedEvents);
                 }
 
-                if (userBookings) {
-                    const fetchedUserBookings = Object.keys(userBookings)
+                const userBookingsKeys = Object.keys(userBookings)
+
+                if (userBookingsKeys.length) {
+                    const fetchedUserBookings = userBookingsKeys
                             .map(key => ({ id: key, ...userBookings[key] }));
                         
                     setUserBookings(fetchedUserBookings);
@@ -292,7 +296,7 @@ const Events = props => {
                 : null
             }
             {props.isAuthenticated ? createEventDiv : null}
-            <div className="w-100 mt-4 mb-4">
+            <div className="w-100 mt-4 mb-0 mb-sm-4">
                 <p className="allUpcomingEvents text-center">Upcoming Events:</p>
                 <div className="parsedItemsContainer">
                     {parsedEvents}

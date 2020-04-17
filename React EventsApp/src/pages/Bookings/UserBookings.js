@@ -5,6 +5,8 @@ import axios from "../../axios-eventsapp";
 import ThemeContext from "../../context/theme-context";
 import * as constants from "../../helpers/constants";
 
+import "./UserBookings.css";
+
 const UserBookings = props => {
     const themeContext = useContext(ThemeContext);
 
@@ -21,16 +23,18 @@ const UserBookings = props => {
                     let userBookings = bookings.data;
                     const allEvents = events.data;
 
-                    if (Object.keys(userBookings).length) {
-                        userBookings = Object.keys(userBookings)
+                    const userBookingsKeys = Object.keys(userBookings);
+
+                    if (userBookingsKeys.length) {
+                        userBookings = userBookingsKeys
                             .map(key => {
                                 const bookedEventId = userBookings[key].eventId;
-                                const bookedEvent = allEvents[bookedEventId];
+                                const eventDate = allEvents[bookedEventId].date;
 
                                 return { 
                                     id: key,
                                     ...userBookings[key],
-                                    eventDate: bookedEvent.date
+                                    eventDate
                                 };
                             });
 
