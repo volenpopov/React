@@ -2,3 +2,29 @@
     font-size: 1.5rem;
     font-weight: bold;
 }
+
+@media screen and (max-width: 800px) {
+    .parsedItemsContainer {
+        width: 400px;
+    }
+
+    .parsedItemsContainer > div {
+        min-width: 100%;
+    }
+}
+
+@media screen and (max-width: 410px) {
+    .parsedItemsContainer {
+        width: 98%;
+    }
+
+    .eventTitle {
+        font-size: 1.1rem !important;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .eventTitle {
+        font-size: 1rem !important;
+    }
+}

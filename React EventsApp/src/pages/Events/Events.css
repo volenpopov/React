@@ -36,3 +36,32 @@
     overflow-y: scroll;
     padding-right: 10px;
 }
+
+@media screen and (max-width: 725px) {
+    .parsedItemsContainer {
+        width: 350px;
+    }
+
+    .parsedItemsContainer > div {
+        min-width: unset;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .parsedItemsContainer {
+        width: 300px;
+    }
+
+    .parsedItemsContainer > div {
+        min-width: unset;
+    }
+    
+    .parsedItemsContainer > div > div:nth-child(2) > button {
+        font-size: .8rem;
+        padding: 10px 5px;
+    }
+
+    .parsedItemsContainer > div > div:nth-child(1) > p:first-child {
+        font-size: 1.1rem;
+    }
+}
