@@ -19,7 +19,7 @@ const Navigationbar = props => {
 
   const authenticatedHeaderMenu = (
     <Fragment>
-      <p className="greetingMessage mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Welcome, <NavLink to="/profile" activeClassName="activeNavButton" className="userEmail px-2">{props.email}!</NavLink></p>
+      <p className="greetingMessage px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Welcome, <NavLink to="/profile" activeClassName="activeNavButton" className="userEmail px-2">{props.email}!</NavLink></p>
       <NavLink to="/bookings" activeClassName="activeNavButton" className="navLinkStyle px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Bookings</NavLink>
       <NavLink to="/logout" activeClassName="activeNavButton" className="navLinkStyle px-2 mt-0 mt-sm-0 mb-2 mb-sm-0" onClick={props.onLogout}>Logout</NavLink>                
     </Fragment>  
