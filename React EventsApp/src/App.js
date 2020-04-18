@@ -4,6 +4,7 @@ import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import axios from "./axios-eventsapp";
 import ThemeContext from "./context/theme-context";
 import { DEFAULT_THEME } from "./helpers/constants";
+import withErrorHandler from "./hoc/withErrorHandler/withErrorHandler";
 import Navbar from "./components/Navigation/Navbar";
 import Footer from "./components/Footer/Footer";
 import AuthenticationForm from "./components/Forms/AuthenticationForm";
@@ -49,7 +50,7 @@ class App extends Component {
 
   render() {
     const { isAuthenticated } = this.props;
-
+    
     return (
       <div className="w-100 vh-100 d-flex flex-column">
         <ThemeContext.Provider value={{ themeColor: this.state.theme, switchTheme: this.switchThemeHandler}}>
@@ -85,4 +86,6 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+const AppWithErrorHandler = withErrorHandler(App, axios);
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppWithErrorHandler));
