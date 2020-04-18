@@ -43,7 +43,7 @@ const UserBookings = props => {
                         setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
                     }             
                 })
-                .catch(error => console.log(error));
+                .catch(error => error);
         }
     }, [props.userId]);
 
@@ -58,7 +58,7 @@ const UserBookings = props => {
                     setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
                 }
             })
-            .catch(error => console.log(error));
+            .catch(error => error);
     };
 
     const currentDateNumber = Date.parse(new Date());

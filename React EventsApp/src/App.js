@@ -34,9 +34,7 @@ class App extends Component {
             this.setState({ themeVerified: true });
           }
         })
-        .catch(error => {
-          console.log(error);
-        })
+        .catch(error => error);
     }
   }
 

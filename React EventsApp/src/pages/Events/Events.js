@@ -75,7 +75,7 @@ const Events = props => {
                     setUserBookings(fetchedUserBookings);
                 }
             })
-            .catch(error => console.log(error));        
+            .catch(error => error);        
     }, [props.userId, props.location.state]);
 
     const closeModalHandler = () => {
@@ -138,11 +138,11 @@ const Events = props => {
                         axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, { ...event, images: imagesBase64Array })
                     })
                     .then(() => setShowCreateModal(false))
-                    .catch(error => console.log(error));                                
+                    .catch(error => error);                                
             } else {
                 axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, event)                          
                     .then(() => setShowCreateModal(false))
-                    .catch(error => console.log(error));
+                    .catch(error => error);
             }
         };
 
@@ -161,7 +161,7 @@ const Events = props => {
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
             axios.post(`${constants.BOOKINGS_URL}.json`, newBooking)
                 .then(() => setUserBookings([...userBookings, newBooking]))
-                .catch(error => console.log(error));
+                .catch(error => error);
         }        
     };
 

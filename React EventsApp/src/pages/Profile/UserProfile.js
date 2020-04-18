@@ -38,7 +38,7 @@ const UserEvents = props => {
                     setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
                 }                
             })
-            .catch(error => console.log(error));        
+            .catch(error => error);        
     }, [props.userId]);
 
     const noEvents = <p style={{ fontSize: "1.3rem" }}>{noEventsMessage}</p>;
