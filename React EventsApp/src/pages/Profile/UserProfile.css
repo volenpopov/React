@@ -4,3 +4,13 @@
     margin-bottom: 0px;
     margin-right: 15px;
 }
+
+.eventContainer > div > button:first-child {
+    padding: 1px 8px;
+}
+
+.eventContainer > div > button:first-child:focus {
+    outline-style:none;
+    box-shadow:none;
+    border-color:transparent;
+}
