@@ -11,6 +11,7 @@ const UserEvents = props => {
     const themeContext = useContext(ThemeContext);
 
     const [userEvents, setUserEvents] = useState({});
+    const [noEventsMessage, setNoEventsMessage] = useState(null);
         
     useEffect(() => {
         const userEventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
@@ -18,25 +19,29 @@ const UserEvents = props => {
 
         Promise.all([userEventsRequest, bookingsRequest])
             .then(([events, bookings]) => {
-                const userEvents = events.data;
-                const allBookings = bookings.data;
-                
-                if (userEvents && Object.keys(userEvents).length) {
-                    if (allBookings) {
-                        Object.keys(allBookings).forEach(key => {
-                            const bookingEventId = allBookings[key].eventId;                                
-                            
-                            if (userEvents[bookingEventId]) {
-                                if (userEvents[bookingEventId].totalAttendees) {
-                                    userEvents[bookingEventId].totalAttendees++;
-                                } else {
-                                    userEvents[bookingEventId].totalAttendees = 1;
-                                }                                       
-                            };
-                        });
-                    }      
-                    setUserEvents({ ...userEvents });              
-                }               
+                if (props.userId) {
+                    const userEvents = events.data;
+                    const allBookings = bookings.data;
+                    
+                    if (userEvents && Object.keys(userEvents).length) {
+                        if (allBookings) {
+                            Object.keys(allBookings).forEach(key => {
+                                const bookingEventId = allBookings[key].eventId;                                
+                                
+                                if (userEvents[bookingEventId]) {
+                                    if (userEvents[bookingEventId].totalAttendees) {
+                                        userEvents[bookingEventId].totalAttendees++;
+                                    } else {
+                                        userEvents[bookingEventId].totalAttendees = 1;
+                                    }                                       
+                                };
+                            });
+                        }      
+                        setUserEvents({ ...userEvents });              
+                    } else {
+                        setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
+                    }
+                }                                
             })
             .catch(error => error);        
     }, [props.userId]);
@@ -54,11 +59,15 @@ const UserEvents = props => {
                     }, {});
                     
                 setUserEvents(updatedEvents);
+
+                if (!Object.keys(updatedEvents).length) {
+                    setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
+                }
             })
             .catch(error => error);
     };
 
-    const noEvents = <p style={{ fontSize: "1.3rem" }}>{constants.NO_EVENTS_MESSAGE}</p>;
+    const noEvents = <p style={{ fontSize: "1.3rem" }}>{noEventsMessage}</p>;
 
     const parsedEvents = Object.keys(userEvents).map(key => {
         const event = userEvents[key];
