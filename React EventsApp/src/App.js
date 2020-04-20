@@ -10,6 +10,7 @@ import Footer from "./components/Footer/Footer";
 import AuthenticationForm from "./components/Forms/AuthenticationForm";
 import HomeGuest from "./pages/Home/HomeGuest";
 import Events from "./pages/Events/Events";
+import EventsGuest from "./pages/Events/EventsGuest";
 import UserBookings from "./pages/Bookings/UserBookings";
 import UserProfile from "./pages/Profile/UserProfile";
 import * as actions from "./store/actions/auth";
@@ -24,7 +25,7 @@ class App extends Component {
 
   componentDidUpdate(prevProps, prevState) {   
     if (!prevProps.userId && this.props.userId && prevState.theme === this.state.theme) {          
-      axios.get(constants.USER_THEME_URL + `/${this.props.userId}.json`)
+      axios.get(constants.USER_THEME_URL + `/${this.props.userId}.json?auth=${this.props.token}`)
         .then(response => {
           const theme = response.data.theme;
 
@@ -40,7 +41,7 @@ class App extends Component {
 
   switchThemeHandler = theme => {
     if (this.props.isAuthenticated) {
-        axios.put(constants.USER_THEME_URL + `/${this.props.userId}.json`, { theme });          
+        axios.put(constants.USER_THEME_URL + `/${this.props.userId}.json?auth=${this.props.token}`, { theme });          
     }   
 
     this.setState({ theme });
@@ -59,6 +60,7 @@ class App extends Component {
               <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
               <Route path="/logout" render={() => <Redirect to="/"/>}/>
               <Route path="/bookings" component={UserBookings} />
+              <Route path="/publicEvents" component={EventsGuest} />
               <Route path="/events" component={Events} />
               <Route path="/profile" component={UserProfile} />
               <Route path="/" exact render={() => isAuthenticated ? <Redirect to="/events"/> : <HomeGuest/>}/>
@@ -74,7 +76,8 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     isAuthenticated: state.token !== null,
-    userId: state.userId 
+    userId: state.userId,
+    token: state.token
   };
 };
 
