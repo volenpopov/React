@@ -39,7 +39,7 @@ const Events = props => {
     const imagesRef = useRef(null);
 
     useEffect(() => {     
-        if (props.userId) {
+        if (props.userId && props.token) {
             const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
             const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}&orderBy="userId"&equalTo="${props.userId}"`);
 
@@ -61,7 +61,7 @@ const Events = props => {
                 })
                 .catch(error => error); 
         }                  
-    }, [props.userId]);
+    }, [props.userId, props.token]);
 
     const closeModalHandler = () => {
         setErrorMessages({ title: null, price: null, date: null, description: null, images: null });
