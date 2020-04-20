@@ -4,11 +4,13 @@ import axios from "../../axios-eventsapp";
 import { Form } from "react-bootstrap";
 
 import ThemeContext from "../../context/theme-context";
+import EventsList from "../../components/Event/EventsList";
+import EventDetailsModal from "../../components/Event/EventDetailsModal";
 import Backdrop from "../../components/Backdrop/Backdrop";
 import Modal from "../../components/Modal/Modal";
-import Carousel from "../../components/Carousel/Carousel";
 import * as validators from "../../helpers/validators";
 import * as constants from "../../helpers/constants";
+import parseEvents from "../../helpers/eventsParser";
 import getBase64 from "../../helpers/getBase64";
 
 import "./Events.css";
@@ -18,7 +20,7 @@ const Events = props => {
 
     const [showCreateModal, setShowCreateModal] = useState(false);
 
-    const [events, setEvents] = useState([]);
+    const [userEvents, setEvents] = useState([]);
     const [userBookings, setUserBookings] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -36,47 +38,30 @@ const Events = props => {
     const descriptionRef = useRef(null);
     const imagesRef = useRef(null);
 
-    useEffect(() => {        
-        const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
-        const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?orderBy="userId"&equalTo="${props.userId}"`);
+    useEffect(() => {     
+        if (props.userId) {
+            const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
+            const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}&orderBy="userId"&equalTo="${props.userId}"`);
 
-        Promise.all([eventsRequest, userBookingsRequest])
-            .then(([events, bookings]) => {
-                const allEvents = events.data;
-                const userBookings = bookings.data;
+            Promise.all([eventsRequest, userBookingsRequest])
+                .then(([events, bookings]) => {
+                    const userEvents = parseEvents(events.data, props.userId);
+                    const userBookings = bookings.data;
+                    
+                    setEvents(userEvents, props.userId);
 
-                const allEventsKeys = Object.keys(allEvents);
+                    const userBookingsKeys = Object.keys(userBookings)
 
-                if (allEventsKeys.length) {
-                    const currentDateNumber = Date.parse(new Date());
-
-                    const fetchedEvents = allEventsKeys
-                        .map(key => ({ id: key, ...allEvents[key] }))
-                        .filter(event => {
-                            const eventDate = new Date(event.date);                            
-                            const eventDateNumber = Date.parse(eventDate);
-
-                            if (props.userId) {                                
-                                return event.creator !== props.userId && currentDateNumber <= eventDateNumber;
-                            }
+                    if (userBookingsKeys.length) {
+                        const fetchedUserBookings = userBookingsKeys
+                                .map(key => ({ id: key, ...userBookings[key] }));
                             
-                            return currentDateNumber <= eventDateNumber;
-                        });                                   
-                                
-                    setEvents(fetchedEvents);
-                }
-
-                const userBookingsKeys = Object.keys(userBookings)
-
-                if (userBookingsKeys.length) {
-                    const fetchedUserBookings = userBookingsKeys
-                            .map(key => ({ id: key, ...userBookings[key] }));
-                        
-                    setUserBookings(fetchedUserBookings);
-                }
-            })
-            .catch(error => error);        
-    }, [props.userId, props.location.state]);
+                        setUserBookings(fetchedUserBookings);
+                    }
+                })
+                .catch(error => error); 
+        }                  
+    }, [props.userId]);
 
     const closeModalHandler = () => {
         setErrorMessages({ title: null, price: null, date: null, description: null, images: null });
@@ -85,7 +70,7 @@ const Events = props => {
 
     const onSetSelectedEventHandler = eventId => {        
         const event = { 
-            ...events.find(event => event.id === eventId), 
+            ...userEvents.find(event => event.id === eventId), 
             alreadyBooked: userBookings.find(booking => booking.eventId === eventId) !== undefined
         };
 
@@ -135,12 +120,12 @@ const Events = props => {
                 
                 Promise.all(imagesPromises)
                     .then(imagesBase64Array => {
-                        axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, { ...event, images: imagesBase64Array })
+                        axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`, { ...event, images: imagesBase64Array })
                     })
                     .then(() => setShowCreateModal(false))
                     .catch(error => error);                                
             } else {
-                axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json`, event)                          
+                axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`, event)                          
                     .then(() => setShowCreateModal(false))
                     .catch(error => error);
             }
@@ -149,7 +134,7 @@ const Events = props => {
         setErrorMessages(errors);
     };
 
-    const BookEventHandler = eventId => {  
+    const bookEventHandler = eventId => {  
         setSelectedEvent(null);  
 
         const newBooking = { 
@@ -159,7 +144,7 @@ const Events = props => {
         };
 
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
-            axios.post(`${constants.BOOKINGS_URL}.json`, newBooking)
+            axios.post(`${constants.BOOKINGS_URL}.json?auth=${props.token}`, newBooking)
                 .then(() => setUserBookings([...userBookings, newBooking]))
                 .catch(error => error);
         }        
@@ -224,62 +209,20 @@ const Events = props => {
     );
 
     const detailsEventModal = (
-        <Modal
-            title="Details" 
-            actionButtonText={
-                selectedEvent 
-                    ? selectedEvent.alreadyBooked ? "Booked" : "Book" 
-                    : "Book"
-            }
-            onFormSubmit={() => BookEventHandler(selectedEvent.title.toLowerCase())}
+        <EventDetailsModal 
+            selectedEvent={selectedEvent} 
+            setSelectedEvent={setSelectedEvent}
+            onFormSubmit={() => bookEventHandler(selectedEvent.title.toLowerCase())}
             authenticated={props.isAuthenticated}
-            closeModal={() => setSelectedEvent(null)}>
-            {
-                selectedEvent
-                    ? (
-                        <Fragment>
-                            <div className="d-flex flex-column mb-3">
-                                <div className="w-100 d-flex justify-content-center align-items-center">
-                                    <Carousel images={selectedEvent.images}/>
-                                </div>
-                                <div className="">
-                                    <h3 className="mb-3 mt-3">{selectedEvent.title}</h3>
-                                    <p className="eventDetails">Date: {new Date(selectedEvent.date).toLocaleString("en-GB", constants.DATE_AND_TIME_OPTIONS)}</p>
-                                    <p className="eventDetails">Price: ${(+selectedEvent.price).toFixed(2)}</p>
-                                    <p className="eventDescription">
-                                        {
-                                            selectedEvent.description
-                                                ? selectedEvent.description
-                                                : "No description"
-                                        }
-                                    </p> 
-                                </div>                                
-                            </div>                              
-                        </Fragment>                                                            
-                    )
-                    : null
-            }            
-        </Modal>
+        />
     );
-    
-    const parsedEvents = events.map(event => {
-        return (
-            <div className="eventContainer" key={event.id}>
-                <div className="d-flex flex-column align-items-center p-3">
-                    <p className="eventTitle">{event.title}</p>
-                    <p 
-                        className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center`}>
-                        ${(+event.price).toFixed(2)} - {new Date(event.date).toLocaleDateString("en-GB", constants.DATE_OPTIONS)}
-                    </p>
-                </div>
-                <div>
-                    <button 
-                        className={`mr-3 btn btn-${themeContext.themeColor}`}
-                        onClick={() => onSetSelectedEventHandler(event.id)}>View Details</button>
-                </div>
-            </div>
-        );
-    });
+
+    const eventsList = (
+        <EventsList
+            events={userEvents}
+            onSetSelectedEventHandler={onSetSelectedEventHandler}
+        />
+    );
     
     return (
         <Fragment>
@@ -299,7 +242,7 @@ const Events = props => {
             <div className="w-100 mt-4 mb-0 mb-sm-4">
                 <p className="allUpcomingEvents text-center">Upcoming Events:</p>
                 <div className="parsedItemsContainer">
-                    {parsedEvents}
+                    {eventsList}
                 </div>
             </div>                        
         </Fragment>        
@@ -309,7 +252,8 @@ const Events = props => {
 const mapStateToProps = state => {
     return {        
         isAuthenticated: state.token !== null,
-        userId: state.userId
+        userId: state.userId,
+        token: state.token
     };
 };
 
