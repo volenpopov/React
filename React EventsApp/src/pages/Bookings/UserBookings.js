@@ -14,30 +14,31 @@ const UserBookings = props => {
     const [noBookingsMessage, setNoBookingsMessage] = useState(null);
     
     useEffect(() => {
-        if (props.userId) {
-            const userBookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?orderBy="userId"&equalTo="${props.userId}"`);
+        if (props.userId && props.token) {
+            const userBookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}&orderBy="userId"&equalTo="${props.userId}"`);
             const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
         
             Promise.all([userBookingsRequest, eventsRequest])
                 .then(([bookings, events]) => {
                     let userBookings = bookings.data;
+                    
                     const allEvents = events.data;
-
+                    
                     const userBookingsKeys = Object.keys(userBookings);
 
-                    if (userBookingsKeys.length) {
+                    if (userBookingsKeys.length) {                       
                         userBookings = userBookingsKeys
-                            .map(key => {
+                            .map(key => {                                
                                 const bookedEventId = userBookings[key].eventId;
                                 const eventDate = allEvents[bookedEventId].date;
-
+                                
                                 return { 
                                     id: key,
                                     ...userBookings[key],
                                     eventDate
                                 };
-                            });
-
+                            });                        
+                        
                         setUserBookings(userBookings);
                     } else {
                         setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
@@ -45,10 +46,10 @@ const UserBookings = props => {
                 })
                 .catch(error => error);
         }
-    }, [props.userId]);
+    }, [props.userId, props.token]);
 
     const cancelBookingHandler = bookingId => {        
-        axios.delete(`${constants.BOOKINGS_URL}/${bookingId}.json`)
+        axios.delete(`${constants.BOOKINGS_URL}/${bookingId}.json?auth=${props.token}`)
             .then(() => {
                 const updatedUserBookings = userBookings.filter(booking => booking.id !== bookingId);
 
@@ -91,7 +92,7 @@ const UserBookings = props => {
             </div>  
         );
     });
-    
+        
     return (
         <div className="pageHeaderContainer w-100 align-self-start d-flex flex-column align-items-center text-center mt-5">
             <h1 className="mb-4">Your Bookings:</h1> 
@@ -102,6 +103,9 @@ const UserBookings = props => {
     );
 };
 
-const mapStateToProps = state => ({ userId: state.userId });
+const mapStateToProps = state => ({ 
+    userId: state.userId,
+    token: state.token
+});
 
 export default connect(mapStateToProps)(UserBookings);
