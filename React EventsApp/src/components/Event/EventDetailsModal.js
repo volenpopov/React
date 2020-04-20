@@ -4,7 +4,9 @@ import Modal from "../Modal/Modal";
 import Carousel from "../../components/Carousel/Carousel";
 import * as constants from "../../helpers/constants";
 
-const EventDetailsModal = ({ selectedEvent, setSelectedEvent }) => {
+const EventDetailsModal = props => {
+    const { selectedEvent, setSelectedEvent } = props;
+
     return (
         <Modal
             title="Details" 
@@ -12,8 +14,9 @@ const EventDetailsModal = ({ selectedEvent, setSelectedEvent }) => {
                 selectedEvent 
                     ? selectedEvent.alreadyBooked ? "Booked" : "Book" 
                     : "Book"
-            }
-            closeModal={() => setSelectedEvent(null)}>
+            }            
+            closeModal={() => setSelectedEvent(null)}
+            { ...props }>
             {
                 selectedEvent
                     ? (
