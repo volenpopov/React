@@ -14,36 +14,38 @@ const UserEvents = props => {
     const [noEventsMessage, setNoEventsMessage] = useState(null);
         
     useEffect(() => {
-        const userEventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
-        const bookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}`);
-
-        Promise.all([userEventsRequest, bookingsRequest])
-            .then(([events, bookings]) => {
-                if (props.userId && props.token) {
-                    const userEvents = events.data;
-                    const allBookings = bookings.data;
-                    
-                    if (userEvents && Object.keys(userEvents).length) {
-                        if (allBookings) {
-                            Object.keys(allBookings).forEach(key => {
-                                const bookingEventId = allBookings[key].eventId;                                
-                                
-                                if (userEvents[bookingEventId]) {
-                                    if (userEvents[bookingEventId].totalAttendees) {
-                                        userEvents[bookingEventId].totalAttendees++;
-                                    } else {
-                                        userEvents[bookingEventId].totalAttendees = 1;
-                                    }                                       
-                                };
-                            });
-                        }      
-                        setUserEvents({ ...userEvents });              
-                    } else {
-                        setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
-                    }
-                }                                
-            })
-            .catch(error => error);        
+        if (props.userId && props.token) {
+            const userEventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
+            const bookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}`);
+    
+            Promise.all([userEventsRequest, bookingsRequest])
+                .then(([events, bookings]) => {
+                    if (props.userId && props.token) {
+                        const userEvents = events.data;
+                        const allBookings = bookings.data;
+                        
+                        if (userEvents && Object.keys(userEvents).length) {
+                            if (allBookings) {
+                                Object.keys(allBookings).forEach(key => {
+                                    const bookingEventId = allBookings[key].eventId;                                
+                                    
+                                    if (userEvents[bookingEventId]) {
+                                        if (userEvents[bookingEventId].totalAttendees) {
+                                            userEvents[bookingEventId].totalAttendees++;
+                                        } else {
+                                            userEvents[bookingEventId].totalAttendees = 1;
+                                        }                                       
+                                    };
+                                });
+                            }      
+                            setUserEvents({ ...userEvents });              
+                        } else {
+                            setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
+                        }
+                    }                                
+                })
+                .catch(error => error);   
+        }                
     }, [props.userId, props.token]);
 
     const deleteEventHandler = (eventId) => {
