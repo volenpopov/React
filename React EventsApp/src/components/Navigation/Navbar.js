@@ -29,7 +29,13 @@ const Navigationbar = props => {
   return (
     <Navbar collapseOnSelect expand="sm" bg={themeContext.themeColor} variant="dark">
       <Navbar.Brand>
-        <NavLink to="/events" activeClassName="activeNavButton" className="navLinkStyle px-2">Home</NavLink>        
+        <NavLink 
+          to={props.isAuthenticated ? "/events" : "/publicEvents"} 
+          activeClassName="activeNavButton" 
+          className="navLinkStyle px-2"
+        >
+          Home
+        </NavLink>        
     </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
@@ -44,7 +50,8 @@ const Navigationbar = props => {
 const mapStateToProps = state => {
   return { 
     email: state.userEmail, 
-    loading: state.loading
+    loading: state.loading,
+    isAuthenticated: state.token !== null
   };
 }
 
