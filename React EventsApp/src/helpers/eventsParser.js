@@ -1,6 +1,5 @@
 const parseEvents = (events, userId = null) => {
   const eventsKeys = Object.keys(events);
-console.log(userId);
 
   let fetchedEvents = [];
 
