@@ -5,9 +5,9 @@ import * as constants from "../../helpers/constants";
 
 const EventItem = ({ event, onSetSelectedEventHandler }) => {
     const themeContext = useContext(ThemeContext);
-
+    
     return (
-        <div className="eventContainer" key={event.id}>
+        <div className="eventContainer">
             <div className="d-flex flex-column align-items-center p-3">
                 <p className="eventTitle">{event.title}</p>
                 <p 
