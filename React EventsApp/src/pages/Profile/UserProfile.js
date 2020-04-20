@@ -15,11 +15,11 @@ const UserEvents = props => {
         
     useEffect(() => {
         const userEventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
-        const bookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json`);
+        const bookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}`);
 
         Promise.all([userEventsRequest, bookingsRequest])
             .then(([events, bookings]) => {
-                if (props.userId) {
+                if (props.userId && props.token) {
                     const userEvents = events.data;
                     const allBookings = bookings.data;
                     
@@ -44,10 +44,10 @@ const UserEvents = props => {
                 }                                
             })
             .catch(error => error);        
-    }, [props.userId]);
+    }, [props.userId, props.token]);
 
     const deleteEventHandler = (eventId) => {
-        axios.delete(`${constants.EVENTS_URL}/${eventId}.json`)
+        axios.delete(`${constants.EVENTS_URL}/${eventId}.json?auth=${props.token}`)
             .then(() => {
                 const updatedEvents = Object.keys(userEvents)
                     .reduce((obj, key) => {
@@ -104,6 +104,9 @@ const UserEvents = props => {
     );        
 }
 
-const mapStateToProps = state => ({ userId: state.userId });
+const mapStateToProps = state => ({ 
+    userId: state.userId,
+    token: state.token
+});
 
 export default connect(mapStateToProps)(UserEvents);
