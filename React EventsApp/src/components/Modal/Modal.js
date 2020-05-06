@@ -20,14 +20,21 @@ const Modal = props => {
                 <div className="buttonContainer">
                     <button 
                         className={`btn btn-${themeContext.themeColor || DEFAULT_THEME}`}
-                        onClick={closeModal}>Close</button>
+                        onClick={closeModal}
+                        type="button"
+                    >
+                        Close
+                    </button>
                     {
                         actionButtonText
                             ? (
                                 <button 
                                     className={`btn btn-${themeContext.themeColor}`}
                                     onClick={onFormSubmit}
-                                    disabled={!authenticated || actionButtonText === "Booked"}>{actionButtonText}
+                                    disabled={!authenticated || actionButtonText === "Booked"}
+                                    type="button"
+                                >
+                                    {actionButtonText}
                                 </button>
                             )
                             : null
