@@ -8,12 +8,12 @@ import "./Carousel.css";
 const ImageCarousel = props => {
     const carouselItems = props.images
         ? props.images
-            .map(image => (
-                <Carousel.Item>
+            .map((image, index) => (
+                <Carousel.Item key={index}>
                     <img className="carouselImage d-block w-100" src={image} alt="EventImage"/>
                 </Carousel.Item> 
             ))
-        : <Carousel.Item>
+        : <Carousel.Item key="default">
             <img className="carouselImage d-block w-100" src={defaultImage} alt="EventImage"/>
         </Carousel.Item>
     
