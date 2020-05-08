@@ -28,3 +28,9 @@
 .buttonContainer button:first-child {
     margin-right: 15px;
 }
+
+.error {
+    background: white;
+    color: black;
+    font-weight: bold;
+}
