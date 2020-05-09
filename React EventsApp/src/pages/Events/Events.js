@@ -19,6 +19,8 @@ const Events = props => {
     const themeContext = useContext(ThemeContext);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
+
+    const [notificationType, setNotificationType] = useState(null);
     const [notificationStyle, setNotificationStyles] = useState({
         left: "-275px"
     });
@@ -66,7 +68,8 @@ const Events = props => {
         }                  
     }, [props.userId, props.token]);
 
-    const showNotification = () => {
+    const showNotification = (type) => {
+        setNotificationType(type);
         setNotificationStyles({            
             left: "25px"
         });
@@ -95,7 +98,7 @@ const Events = props => {
     const onSuccessfullEventCreation = () => {
         setShowCreateModal(false);
 
-        showNotification();
+        showNotification("event");
 
         setTimeout(() => {
             hideNotification();
@@ -176,7 +179,15 @@ const Events = props => {
 
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
             axios.post(`${constants.BOOKINGS_URL}.json?auth=${props.token}`, newBooking)
-                .then(() => setUserBookings([...userBookings, newBooking]))
+                .then(() => {
+                    setUserBookings([...userBookings, newBooking]);
+
+                    showNotification("booking");
+
+                    setTimeout(() => {
+                        hideNotification();
+                    }, 1500);
+                })
                 .catch(error => error);
         }        
     };
@@ -260,7 +271,11 @@ const Events = props => {
             className={`successNotification bg-${themeContext.themeColor}`}
             style={notificationStyle}
         >
-            Event created successfully!
+            {
+                notificationType === "event"
+                    ? "Event created successfully!"
+                    : "Successfull booking!"
+            }
         </p>
     );
 
