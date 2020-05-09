@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 
 import ThemeContext from "../../context/theme-context";
-import { DEFAULT_THEME } from "../../helpers/constants";
 
 import "./Modal.css";
 
@@ -32,7 +31,7 @@ const Modal = props => {
                             title === "Error"
                                 ? { border: "2px solid black" }
                                 : null
-                        }
+                        }   
                         onClick={closeModal}
                         type="button"
                     >

@@ -19,6 +19,9 @@ const Events = props => {
     const themeContext = useContext(ThemeContext);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [notificationStyle, setNotificationStyles] = useState({
+        left: "-275px"
+    });
 
     const [userEvents, setEvents] = useState([]);
     const [userBookings, setUserBookings] = useState([]);
@@ -63,6 +66,18 @@ const Events = props => {
         }                  
     }, [props.userId, props.token]);
 
+    const showNotification = () => {
+        setNotificationStyles({            
+            left: "25px"
+        });
+    };
+
+    const hideNotification = () => {
+        setNotificationStyles({
+            left: "-275px"
+        });
+    };
+
     const closeModalHandler = () => {
         setErrorMessages({ title: null, price: null, date: null, description: null, images: null });
         setShowCreateModal(false);
@@ -75,6 +90,16 @@ const Events = props => {
         };
 
         setSelectedEvent(event);
+    };
+
+    const onSuccessfullEventCreation = () => {
+        setShowCreateModal(false);
+
+        showNotification();
+
+        setTimeout(() => {
+            hideNotification();
+        }, 1500);
     };
 
     const onCreateEvent = () => {
@@ -120,20 +145,26 @@ const Events = props => {
                 
                 Promise.all(imagesPromises)
                     .then(imagesBase64Array => {
-                        axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`, { ...event, images: imagesBase64Array })
+                        return axios.put(
+                            `${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`,
+                            { ...event, images: imagesBase64Array }
+                        );                            
                     })
-                    .then(() => setShowCreateModal(false))
+                    .then(() => onSuccessfullEventCreation())
                     .catch(error => error);                                
             } else {
-                axios.put(`${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`, event)                          
-                    .then(() => setShowCreateModal(false))
+                axios.put(
+                    `${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`,
+                    event
+                )                          
+                    .then(() => onSuccessfullEventCreation())
                     .catch(error => error);
             }
         };
 
         setErrorMessages(errors);
     };
-
+ 
     const bookEventHandler = eventId => {  
         setSelectedEvent(null);  
 
@@ -224,8 +255,18 @@ const Events = props => {
         />
     );
     
+    const successfullEventCreationNotification = (
+        <p 
+            className={`successNotification bg-${themeContext.themeColor}`}
+            style={notificationStyle}
+        >
+            Event created successfully!
+        </p>
+    );
+
     return (
         <Fragment>
+            {successfullEventCreationNotification}
             {showCreateModal || selectedEvent
                 ? <Fragment>
                     <Backdrop/>

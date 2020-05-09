@@ -37,6 +37,17 @@
     padding-right: 10px;
 }
 
+.successNotification {
+    color: white;
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 8px;
+    position: absolute;
+    top: 80px;   
+    transition: left 0.5s ease; 
+}
+
 @media screen and (max-width: 725px) {
     .parsedItemsContainer {
         width: 350px;
