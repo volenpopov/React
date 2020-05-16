@@ -46,23 +46,30 @@ const Events = props => {
     useEffect(() => {     
         if (props.userId && props.token) {
             const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
-            const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}&orderBy="userId"&equalTo="${props.userId}"`);
+            const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}"`);
 
             Promise.all([eventsRequest, userBookingsRequest])
                 .then(([events, bookings]) => {
                     const userEvents = parseEvents(events.data, props.userId);
-                    const userBookings = bookings.data;
-                    
+                    const bookingsByEvents = bookings.data;
+
                     setEvents(userEvents, props.userId);
 
-                    const userBookingsKeys = Object.keys(userBookings)
+                    const userBookings = [];
 
-                    if (userBookingsKeys.length) {
-                        const fetchedUserBookings = userBookingsKeys
-                                .map(key => ({ id: key, ...userBookings[key] }));
+                    Object.keys(bookingsByEvents).forEach((event) => {
+                        const eventBookings = bookingsByEvents[event];
+
+                        Object.keys(eventBookings).forEach((bookingKey) => {
+                            const booking = eventBookings[bookingKey];
                             
-                        setUserBookings(fetchedUserBookings);
-                    }
+                            if (booking.userId === props.userId) {
+                                userBookings.push(booking);
+                            }
+                        }); 
+                    });
+                                        
+                    setUserBookings(userBookings);                   
                 })
                 .catch(error => error); 
         }                  
@@ -176,9 +183,9 @@ const Events = props => {
             eventId, 
             bookedOn: new Date() 
         };
-
+                
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
-            axios.post(`${constants.BOOKINGS_URL}.json?auth=${props.token}`, newBooking)
+            axios.post(`${constants.BOOKINGS_URL}/${eventId}.json?auth=${props.token}`, newBooking)
                 .then(() => {
                     setUserBookings([...userBookings, newBooking]);
 
