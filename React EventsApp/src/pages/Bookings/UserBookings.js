@@ -47,32 +47,7 @@ const UserBookings = props => {
                         setUserBookings(userBookings);
                     } else {
                         setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);    
-                    }
-                    
-
-                    // let userBookings = bookings.data;
-                    
-                    // const allEvents = events.data;
-                    
-                    // const userBookingsKeys = Object.keys(userBookings);
-
-                    // if (userBookingsKeys.length) {                       
-                    //     userBookings = userBookingsKeys
-                    //         .map(key => {                                
-                    //             const bookedEventId = userBookings[key].eventId;
-                    //             const eventDate = allEvents[bookedEventId].date;
-                                
-                    //             return { 
-                    //                 id: key,
-                    //                 ...userBookings[key],
-                    //                 eventDate
-                    //             };
-                    //         });                        
-                        
-                    //     setUserBookings(userBookings);
-                    // } else {
-                    //     setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
-                    // }             
+                    }                               
                 })
                 .catch(error => error);
         }
