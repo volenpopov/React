@@ -15,34 +15,65 @@ const UserBookings = props => {
     
     useEffect(() => {
         if (props.userId && props.token) {
-            const userBookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}&orderBy="userId"&equalTo="${props.userId}"`);
+            const userBookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}`);
             const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
         
             Promise.all([userBookingsRequest, eventsRequest])
                 .then(([bookings, events]) => {
-                    let userBookings = bookings.data;
-                    
+                    const bookingsByEvents = bookings.data;
                     const allEvents = events.data;
-                    
-                    const userBookingsKeys = Object.keys(userBookings);
 
-                    if (userBookingsKeys.length) {                       
-                        userBookings = userBookingsKeys
-                            .map(key => {                                
-                                const bookedEventId = userBookings[key].eventId;
-                                const eventDate = allEvents[bookedEventId].date;
+                    const userBookings = [];
+
+                    Object.keys(bookingsByEvents).forEach((event) => {
+                        const eventBookings = bookingsByEvents[event];
+
+                        Object.keys(eventBookings).forEach((bookingKey) => {
+                            const booking = eventBookings[bookingKey];
+                            
+                            if (booking.userId === props.userId) {                                                                
+                                const eventDate = allEvents[booking.eventId].date;
+                                console.log(eventDate);
                                 
-                                return { 
-                                    id: key,
-                                    ...userBookings[key],
-                                    eventDate
-                                };
-                            });                        
-                        
+                                userBookings.push({
+                                    id: bookingKey,
+                                    eventDate,
+                                    ...booking
+                                });
+                            }
+                        }); 
+                    });
+                    
+                    if (userBookings.length) {
                         setUserBookings(userBookings);
                     } else {
-                        setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
-                    }             
+                        setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);    
+                    }
+                    
+
+                    // let userBookings = bookings.data;
+                    
+                    // const allEvents = events.data;
+                    
+                    // const userBookingsKeys = Object.keys(userBookings);
+
+                    // if (userBookingsKeys.length) {                       
+                    //     userBookings = userBookingsKeys
+                    //         .map(key => {                                
+                    //             const bookedEventId = userBookings[key].eventId;
+                    //             const eventDate = allEvents[bookedEventId].date;
+                                
+                    //             return { 
+                    //                 id: key,
+                    //                 ...userBookings[key],
+                    //                 eventDate
+                    //             };
+                    //         });                        
+                        
+                    //     setUserBookings(userBookings);
+                    // } else {
+                    //     setNoBookingsMessage(constants.NO_BOOKINGS_MESSAGE);
+                    // }             
                 })
                 .catch(error => error);
         }
