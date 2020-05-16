@@ -26,17 +26,15 @@ const UserEvents = props => {
                         
                         if (userEvents && Object.keys(userEvents).length) {
                             if (allBookings) {
-                                Object.keys(allBookings).forEach(key => {
-                                    const bookingEventId = allBookings[key].eventId;                                
-                                    
-                                    if (userEvents[bookingEventId]) {
-                                        if (userEvents[bookingEventId].totalAttendees) {
-                                            userEvents[bookingEventId].totalAttendees++;
-                                        } else {
-                                            userEvents[bookingEventId].totalAttendees = 1;
-                                        }                                       
-                                    };
-                                });
+                                Object.keys(userEvents).forEach((eventId) => {
+                                    const eventBookingsObj = allBookings[eventId];
+
+                                    if (eventBookingsObj) {
+                                        userEvents[eventId].totalAttendees = Object.keys(eventBookingsObj).length;
+                                    } else {
+                                        userEvents[eventId].totalAttendees = 0;
+                                    }                                    
+                                });                            
                             }      
                             setUserEvents({ ...userEvents });              
                         } else {
@@ -48,25 +46,39 @@ const UserEvents = props => {
         }                
     }, [props.userId, props.token]);
 
-    const deleteEventHandler = (eventId) => {
-        axios.delete(`${constants.EVENTS_URL}/${eventId}.json?auth=${props.token}`)
-            .then(() => {
-                const updatedEvents = Object.keys(userEvents)
-                    .reduce((obj, key) => {
-                        if (key !== eventId) {
-                            obj[key] = { ...userEvents[key] };
-                        }                        
+    const updateEventsAfterDeletion = (eventId) => {
+        const updatedEvents = Object.keys(userEvents)
+            .reduce((obj, key) => {
+                if (key !== eventId) {
+                    obj[key] = { ...userEvents[key] };
+                }                        
 
-                        return obj;
-                    }, {});
+                return obj;
+            }, {});
                     
-                setUserEvents(updatedEvents);
+        setUserEvents(updatedEvents);
 
-                if (!Object.keys(updatedEvents).length) {
-                    setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
-                }
-            })
-            .catch(error => error);
+        if (!Object.keys(updatedEvents).length) {
+            setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
+        }
+    };
+
+    const deleteEventHandler = (eventId) => {
+        const eventAttendees = userEvents[eventId].totalAttendees;
+        
+        const deleteEventRequest = axios.delete(`${constants.EVENTS_URL}/${eventId}.json?auth=${props.token}`);
+
+        if (eventAttendees) {
+            const deleteAllEventBookings = axios.delete(`${constants.BOOKINGS_URL}/${eventId}.json?auth=${props.token}`);
+           
+            Promise.all([deleteAllEventBookings, deleteEventRequest])
+                .then(() => updateEventsAfterDeletion(eventId))
+                .catch(error => error);
+        } else {
+            deleteEventRequest
+                .then(() => updateEventsAfterDeletion(eventId))
+                .catch(error => error);
+        }        
     };
 
     const noEvents = <p style={{ fontSize: "1.3rem" }}>{noEventsMessage}</p>;
@@ -95,7 +107,7 @@ const UserEvents = props => {
             </div>  
         );
     });        
-    
+        
     return (
         <div className="pageHeaderContainer w-100 align-self-start d-flex flex-column align-items-center text-center mt-5">
             <h1 className="mb-4">Your Events:</h1> 
