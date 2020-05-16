@@ -33,7 +33,6 @@ const UserBookings = props => {
                             
                             if (booking.userId === props.userId) {                                                                
                                 const eventDate = allEvents[booking.eventId].date;
-                                console.log(eventDate);
                                 
                                 userBookings.push({
                                     id: bookingKey,
