@@ -53,8 +53,8 @@ const UserBookings = props => {
         }
     }, [props.userId, props.token]);
 
-    const cancelBookingHandler = bookingId => {        
-        axios.delete(`${constants.BOOKINGS_URL}/${bookingId}.json?auth=${props.token}`)
+    const cancelBookingHandler = (bookingId, event) => {        
+        axios.delete(`${constants.BOOKINGS_URL}/${event}/${bookingId}.json?auth=${props.token}`)
             .then(() => {
                 const updatedUserBookings = userBookings.filter(booking => booking.id !== bookingId);
 
@@ -90,7 +90,7 @@ const UserBookings = props => {
                     <button 
                         className={`mr-3 btn btn-${themeContext.themeColor} px-sm-3 px-lg-4`}
                         disabled={eventDateNumber < currentDateNumber}
-                        onClick={() => cancelBookingHandler(booking.id)}>                        
+                        onClick={() => cancelBookingHandler(booking.id, booking.eventId)}>                        
                         Cancel
                     </button>
                 </div>            
