@@ -7,7 +7,7 @@ import * as actions from "../../store/actions/auth";
 
 import "./Navbar.css";
 
-const Navigationbar = props => {
+export const Navigationbar = props => {
   const themeContext = useContext(ThemeContext);
   
   const headerMenu = (
@@ -29,7 +29,7 @@ const Navigationbar = props => {
     <Navbar collapseOnSelect expand="sm" bg={themeContext.themeColor} variant="dark">
       <Navbar.Brand>
         <NavLink 
-          to={props.isAuthenticated ? "/events" : "/publicEvents"} 
+          to={props.authenticated ? "/events" : "/publicEvents"} 
           activeClassName="activeNavButton" 
           className="navLinkStyle px-2"
         >
@@ -55,8 +55,7 @@ const Navigationbar = props => {
 const mapStateToProps = state => {
   return { 
     email: state.userEmail, 
-    loading: state.loading,
-    isAuthenticated: state.token !== null
+    loading: state.loading
   };
 }
 
