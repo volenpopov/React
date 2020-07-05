@@ -25,7 +25,6 @@ const Navigationbar = props => {
     </Fragment>  
   );
 
-
   return (
     <Navbar collapseOnSelect expand="sm" bg={themeContext.themeColor} variant="dark">
       <Navbar.Brand>
@@ -40,7 +39,13 @@ const Navigationbar = props => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
-          { props.loading ? null : props.authenticated ? authenticatedHeaderMenu : headerMenu }                    
+        {
+            props.loading
+                ? null
+                : props.authenticated
+                    ? authenticatedHeaderMenu
+                    : headerMenu
+        }                    
         </Nav>
       </Navbar.Collapse>
     </Navbar>
