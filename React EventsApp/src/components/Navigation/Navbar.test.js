@@ -5,7 +5,6 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import { Navigationbar } from "./Navbar";
 import { NavLink } from "react-router-dom";
-import { logout } from '../../store/actions/auth';
 
 configure({ adapter: new Adapter() });
 
