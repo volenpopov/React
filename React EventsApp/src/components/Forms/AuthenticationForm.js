@@ -66,6 +66,8 @@ class AuthenticationForm extends Component {
                         confirmPassword: confirmPasswordError
                     }
                 });
+
+                return;
         }
 
         this.props.onAuth(email, password, this.props.login);                     
