@@ -58,16 +58,17 @@ class AuthenticationForm extends Component {
 
         if (emailIsRequiredError || 
             passwordIsRequiredError ||
-            (this.state.errorMessages.confirmPassword !== confirmPasswordError)) {
-                this.setState({ 
-                    errorMessages: {
-                        email: emailError,
-                        password: passwordError,
-                        confirmPassword: confirmPasswordError
-                    }
-                });
-
-                return;
+            (!this.props.login && confirmPasswordError)
+        ) {
+            this.setState({ 
+                errorMessages: {
+                    email: emailError,
+                    password: passwordError,
+                    confirmPassword: confirmPasswordError
+                }
+            });
+            
+            return;
         }
 
         this.props.onAuth(email, password, this.props.login);                     
@@ -132,7 +133,7 @@ class AuthenticationForm extends Component {
         if (this.props.loading) {
             return null;
         }
-
+        
         let authRedirect = null;
         if (this.props.isAuthenticated) {
             authRedirect = <Redirect to="/"/>;
@@ -166,7 +167,13 @@ class AuthenticationForm extends Component {
                 <Form className="w-sm-100" onSubmit={this.onFormSubmit}>
                     <Form.Group controlId="formBasicEmail" className="mb-3">
                         <Form.Label>Email address:</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" name="email" onChange={this.onEmailChanged}/>
+                        <Form.Control
+                            type="email"
+                            placeholder="Enter email"
+                            name="email"
+                            value={this.state.email || ""}
+                            onChange={this.onEmailChanged}
+                        />
                         <span className="text-danger">
                             {formHasBeenSubmitted ? emailError : null}
                         </span>
@@ -174,7 +181,13 @@ class AuthenticationForm extends Component {
 
                     <Form.Group controlId="formBasicPassword" className="mb-3">
                         <Form.Label>Password:</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Password" onChange={this.onPasswordChanged}/>
+                        <Form.Control
+                            type="password"
+                            name="password"
+                            value={this.state.password || ""}
+                            placeholder="Password"
+                            onChange={this.onPasswordChanged}
+                        />
                         <span className="text-danger">
                             {formHasBeenSubmitted ? passwordError : null}
                         </span>                        
