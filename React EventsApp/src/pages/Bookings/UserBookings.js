@@ -77,7 +77,7 @@ const UserBookings = props => {
         return (
             <div className="eventContainer" key={booking.id}>
                 <div className="d-flex flex-column align-items-center p-3">
-                    <p className="eventTitle text-capitalize">
+                    <p className="eventTitle">
                         {`${booking.eventId} - ${new Date(booking.eventDate).toLocaleDateString("en-GB", constants.DATE_AND_TIME_OPTIONS)}`}
                     </p>
                     <p 

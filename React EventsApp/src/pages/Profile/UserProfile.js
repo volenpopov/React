@@ -97,7 +97,7 @@ const UserEvents = props => {
                         X
                     </button>
                     <p 
-                        className="eventTitle text-capitalize ml-3"
+                        className="eventTitle ml-3"
                         style={{ width: "auto" }}
                     >{event.title}</p>                                           
                 </div>
