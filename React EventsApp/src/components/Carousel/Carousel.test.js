@@ -1,13 +1,10 @@
 import React from 'react';
 
-import { configure, shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 
 import Carousel from 'react-bootstrap/Carousel'
 import ImageCarousel from "./Carousel";
 import defaultImage from "../../resources/noimagefound.jpg";
-
-configure({ adapter: new Adapter() });
 
 describe("<Carousel/>", () => {
     let wrapper;
