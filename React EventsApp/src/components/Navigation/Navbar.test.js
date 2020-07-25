@@ -136,7 +136,11 @@ describe("<Navbar/>", () => {
             onLogout: mockLogout
         });        
 
-        component.findWhere(NavLink => NavLink.props().to === "/logout").simulate("click");
+        component
+            .find(NavLink)    
+            .filterWhere(NavLink => NavLink.props().to === "/logout")
+            .first()
+            .simulate("click");
 
         expect(mockLogout).toBeCalled();
     });
