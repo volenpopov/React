@@ -6,156 +6,138 @@ import { Navigationbar } from "./Navbar";
 import { NavLink } from "react-router-dom";
 
 describe("<Navbar/>", () => {
-    let wrapper;
-
-    const loginBtn = (
-        <NavLink
-            to="/login"
-            activeClassName="activeNavButton"
-            className="navLinkStyle mr-2 mt-2 mt-sm-0 mb-2 mb-sm-0 px-2"
-        >
-            Login
-        </NavLink> 
-    );
-
-    const registerBtn = (
-        <NavLink
-            to="/register"
-            activeClassName="activeNavButton"
-            className="navLinkStyle px-2"
-        >
-            Register
-        </NavLink> 
-    );
+    let component;
 
     const userEmail = "test@gmail.com";
 
-    const userGreetingBtn = (
-        <p
-            className="greetingMessage px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0"
-        >
-            Welcome, <NavLink
-                to="/profile"
-                activeClassName="activeNavButton" 
-                className="userEmail px-2"
-            >
-                {userEmail}!
-            </NavLink>
-        </p>
-    );
-
-    const bookingsBtn = (
-        <NavLink
-            to="/bookings"
-            activeClassName="activeNavButton"
-            className="navLinkStyle px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0"
-        >
-            Bookings
-        </NavLink>
-    );
-
-    const onLogout = () => {};
-        
-    const logoutBtn = (
-        <NavLink
-            to="/logout"
-            activeClassName="activeNavButton"
-            className="navLinkStyle px-2 mt-0 mt-sm-0 mb-2 mb-sm-0"
-            onClick={onLogout}
-        >
-            Logout
-        </NavLink>                
-    );
-
     beforeEach(() => {
-        wrapper = shallow(<Navigationbar/>);
+        component = shallow(<Navigationbar/>);
+    });
+
+    it("should render", () => {
+        expect(component.exists()).toBeTruthy();
     });
 
     it("should render 3 buttons when not authenticated", () => {
         // Home Login Register
-        expect(wrapper.find(NavLink)).toHaveLength(3);
+        expect(component.find(NavLink)).toHaveLength(3);
     });
     
     it("should render a Home button leading to /publicEvents when not authenticated", () => {
         expect(
-            wrapper
-                .contains(
-                    <NavLink
-                        to="/publicEvents" 
-                        activeClassName="activeNavButton" 
-                        className="navLinkStyle px-2"
-                    >
-                        Home
-                    </NavLink>
-                )
-        )
-        .toEqual(true);
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/publicEvents")
+        ).toEqual(true);
     });
 
     it("should render a Home button leading to /events when authenticated", () => {
-        wrapper.setProps({ authenticated: true });
+        component.setProps({ authenticated: true });
         expect(
-            wrapper
-                .contains(
-                    <NavLink
-                        to="/events" 
-                        activeClassName="activeNavButton" 
-                        className="navLinkStyle px-2"
-                    >
-                        Home
-                    </NavLink>
-                )
-        )
-        .toEqual(true);
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/events")
+        ).toEqual(true);        
     });
 
-    it("should render Login and Register buttons when not authenticated", () => {        
-        expect(wrapper.contains(loginBtn)).toEqual(true);
+    it("should render Login and Register buttons when not authenticated", () => {   
+        expect(
+            component
+                .find(NavLink)    
+                .someWhere(NavLink => NavLink.props().to === "/login")
+        ).toEqual(true);
 
-        expect(wrapper.contains(registerBtn)).toEqual(true);
+        expect(
+            component            
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/register")
+        ).toEqual(true);             
     });
 
     it("should not render Login and Register buttons when authenticated", () => { 
-        wrapper.setProps({ authenticated: true });
+        component.setProps({ authenticated: true });
         
-        expect(wrapper.contains(loginBtn)).toEqual(false);
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/login")
+        ).toEqual(false);
 
-        expect(wrapper.contains(registerBtn)).toEqual(false);
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/register")
+        ).toEqual(false);
     });
 
     it("should render a user greeting button when authenticated", () => {
-        wrapper.setProps({
+        component.setProps({
             authenticated: true,
             email: userEmail
         });
 
-        expect(wrapper.contains(userGreetingBtn)).toEqual(true);
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/profile"
+                    && NavLink.text() === `${userEmail}!`
+                    && NavLink.hasClass("userEmail"))
+        ).toEqual(true);        
     });
 
     it("should not render a user greeting button when not authenticated", () => {
-        expect(wrapper.contains(userGreetingBtn)).toEqual(false);
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/profile")
+        ).toEqual(false);        
     });
 
     it("should render a Bookings button leading to /bookings when authenticated", () => {        
-        wrapper.setProps({ authenticated: true });
-
-        expect(wrapper.contains(bookingsBtn)).toEqual(true)
+        component.setProps({ authenticated: true });
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/bookings")
+        ).toEqual(true);   
     });
 
     it("should not render a Bookings button when not authenticated", () => {        
-        expect(wrapper.contains(bookingsBtn)).toEqual(false);
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/bookings")
+        ).toEqual(false); 
     });
 
     it("should render a Logout button leading to /logout when authenticated", () => {                
-        wrapper.setProps({
-            authenticated: true,
-            onLogout
-        });
-
-        expect(wrapper.contains(logoutBtn)).toEqual(true);
+        component.setProps({ authenticated: true });
+        
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/logout")
+        ).toEqual(true); 
     });
 
     it("should not render a Logout button when not authenticated", () => {                        
-        expect(wrapper.contains(logoutBtn)).toEqual(false);
+        expect(
+            component
+                .find(NavLink)
+                .someWhere(NavLink => NavLink.props().to === "/logout")
+        ).toEqual(false); 
+    });
+
+    it("should call logout func on Logout btn click", () => {
+        const mockLogout = jest.fn();
+
+        component.setProps({
+            authenticated: true,
+            onLogout: mockLogout
+        });        
+
+        component.findWhere(NavLink => NavLink.props().to === "/logout").simulate("click");
+
+        expect(mockLogout).toBeCalled();
     });
 });
