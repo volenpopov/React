@@ -144,4 +144,17 @@ describe("<Navbar/>", () => {
 
         expect(mockLogout).toBeCalled();
     });
+
+    it("should render only the Home button while loading", () => {
+        component.setProps({ loading: true });
+
+        expect(component.find(NavLink)).toHaveLength(1);
+        expect(
+                component
+                    .find(NavLink)
+                    .someWhere(NavLink => NavLink.hasClass("navLinkStyle")
+                        && NavLink.text() === "Home"
+                    )                    
+        ).toEqual(true);
+    });
 });
