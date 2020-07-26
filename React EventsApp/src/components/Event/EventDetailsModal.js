@@ -16,7 +16,8 @@ const EventDetailsModal = props => {
                     : "Book"
             }            
             closeModal={() => setSelectedEvent(null)}
-            { ...props }>
+            { ...props }
+        >
             {
                 selectedEvent
                     ? (
