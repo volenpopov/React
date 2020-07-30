@@ -26,7 +26,7 @@ const EventDetailsModal = props => {
                                 <div className="w-100 d-flex justify-content-center align-items-center">
                                     <Carousel images={selectedEvent.images}/>
                                 </div>
-                                <div className="">
+                                <div>
                                     <h3 className="mb-3 mt-3">{selectedEvent.title}</h3>
                                     <p className="eventDetails">Date: {new Date(selectedEvent.date).toLocaleString("en-GB", constants.DATE_AND_TIME_OPTIONS)}</p>
                                     <p className="eventDetails">Price: ${(+selectedEvent.price).toFixed(2)}</p>
