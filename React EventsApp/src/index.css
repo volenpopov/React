@@ -31,3 +31,13 @@ body {
 .eventContainer p:nth-child(2) {
   width: 150px;
 }
+
+.pageNotFound {
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 400px) {
+    .pageNotFound {
+        font-size: 26px;
+    }
+}
