@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import axios from "./axios-eventsapp";
@@ -51,7 +51,7 @@ class App extends Component {
     const { isAuthenticated } = this.props;
 
     const pageNotFound = <h1 className="pageNotFound">404 Page Not Found</h1>;
-    const pageNotFoundRoute = <Route path="" render={() => pageNotFound}/>;
+    const pageNotFoundRoute = <Route render={() => pageNotFound}/>;
 
     const authRoutes = (
         <Switch>
@@ -60,19 +60,8 @@ class App extends Component {
             <Route path="/profile" component={UserProfile} />
             <Route path="/logout" render={() => <Redirect to="/"/>}/>
             <Route path="/bookings" component={UserBookings} />
-            {pageNotFoundRoute}
-        </Switch> 
-    );
-
-    const nonAuthRoutes = (
-        <Switch>
-            <Route path="/" exact component={HomeGuest}/>
-            <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
-            <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
-            <Route path="/publicEvents" component={EventsGuest} />
-            <Route path="" render={() => pageNotFound}/>
-            {pageNotFoundRoute}
-        </Switch>         
+            { pageNotFoundRoute }
+        </Switch>        
     );
 
     return (
@@ -80,7 +69,15 @@ class App extends Component {
         <ThemeContext.Provider value={{ themeColor: this.state.theme, switchTheme: this.switchThemeHandler}}>
           <Navbar authenticated={isAuthenticated}/>
           <div className="d-flex align-items-center flex-grow-1 flex-wrap" style={{ height: "85%" }}>
-            { isAuthenticated ? authRoutes : nonAuthRoutes }            
+            <Switch>                
+                <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
+                <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
+                <Route path="/logout" render={() => <Redirect to="/"/>}/>
+                <Route path="/publicEvents" component={EventsGuest} />
+                { isAuthenticated && authRoutes }                
+                <Route path="/" exact component={HomeGuest}/>
+                { pageNotFoundRoute }
+            </Switch>           
           </div>
           <Footer/>
         </ThemeContext.Provider>          
