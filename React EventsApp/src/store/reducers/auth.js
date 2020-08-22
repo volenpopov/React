@@ -6,6 +6,7 @@ const initialState = {
     userEmail: null,
     error: null,
     loading: false,
+    userInfoChecked: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -44,6 +45,18 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 error: null
             }
+        case actionTypes.AUTH_CHECKSTATE_START: {
+            return {
+                ...state,
+                userInfoChecked: false
+            }
+        }
+        case actionTypes.AUTH_CHECKSTATE_FINISHED: {
+            return {
+                ...state,
+                userInfoChecked: true
+            }
+        }
         default:
             return state;
     }

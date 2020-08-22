@@ -61,26 +61,39 @@ export const auth = ( email, password, login ) => {
     };
 }
 
+export const authCheckStateStart = () => {
+    return { type: actionTypes.AUTH_CHECKSTATE_START };
+};
+
+export const authCheckStateFinished = () => {
+    return { type: actionTypes.AUTH_CHECKSTATE_FINISHED };
+};
+
 export const authCheckState = () => {
     return dispatch => {
         dispatch(authStart());
+        dispatch(authCheckStateStart());
         
         const token = localStorage.getItem("token");
         const expirationTime = new Date(localStorage.getItem("expirationTime"));
         const userId = localStorage.getItem("userId");
 
         if (!token) {
+            dispatch(authCheckStateFinished());
             dispatch(logout());
         } else {
             if (expirationTime <= new Date()) {
+                dispatch(authCheckStateFinished());
                 dispatch(logout());                
             } else {                
                 axios.post(constants.GET_USER_DATA_URL, { idToken: token })
                     .then(response => {                                        
                         dispatch(authSuccess(token, userId, response.data.users[0].email));
+                        dispatch(authCheckStateFinished());
                         dispatch(checkAuthTimeout((expirationTime.getTime() - new Date().getTime()) / 1000));
                     })
                     .catch(() => {
+                        dispatch(authCheckStateFinished());
                         dispatch(logout());
                     });                
             }            
