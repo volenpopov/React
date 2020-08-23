@@ -87,9 +87,9 @@ export const authCheckState = () => {
                 dispatch(logout());                
             } else {                
                 axios.post(constants.GET_USER_DATA_URL, { idToken: token })
-                    .then(response => {                                        
+                    .then(response => {      
+                        // authCheckStateFinished is also included in the authSuccess                                  
                         dispatch(authSuccess(token, userId, response.data.users[0].email));
-                        dispatch(authCheckStateFinished());
                         dispatch(checkAuthTimeout((expirationTime.getTime() - new Date().getTime()) / 1000));
                     })
                     .catch(() => {
