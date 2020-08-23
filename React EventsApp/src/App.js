@@ -49,23 +49,21 @@ class App extends Component {
     axios
       .get(constants.USER_THEME_URL + `/${userId}.json?auth=${token}`)
       .then((response) => {
-        let theme;
-
         if (response.data) {
-          theme = response.data.theme;
+          const theme = response.data.theme;
 
           if (theme !== this.state.theme) {
             this.setState({
               theme,
               themeVerified: true,
-              fetchingUserTheme: false,
+              fetchingUserTheme: false
             });
           }
         }
 
         this.setState({
           themeVerified: true,
-          fetchingUserTheme: false,
+          fetchingUserTheme: false
         });
       })
       .catch((error) => error);
@@ -128,9 +126,7 @@ class App extends Component {
                 render={() => (
                   <AuthenticationForm
                     login={false}
-                    unverifyTheme={() =>
-                      this.setState({ themeVerified: false })
-                    }
+                    unverifyTheme={this.unverifyUserTheme}
                   />
                 )}
               />
@@ -139,9 +135,7 @@ class App extends Component {
                 render={() => (
                   <AuthenticationForm
                     login={true}
-                    unverifyTheme={() =>
-                      this.setState({ themeVerified: false })
-                    }
+                    unverifyTheme={this.unverifyUserTheme}
                   />
                 )}
               />
