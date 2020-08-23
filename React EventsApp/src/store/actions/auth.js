@@ -71,8 +71,8 @@ export const authCheckStateFinished = () => {
 
 export const authCheckState = () => {
     return dispatch => {
+        // authCheckStateStart is also included in the authStart action 
         dispatch(authStart());
-        dispatch(authCheckStateStart());
         
         const token = localStorage.getItem("token");
         const expirationTime = new Date(localStorage.getItem("expirationTime"));
@@ -88,7 +88,7 @@ export const authCheckState = () => {
             } else {                
                 axios.post(constants.GET_USER_DATA_URL, { idToken: token })
                     .then(response => {      
-                        // authCheckStateFinished is also included in the authSuccess                                  
+                        // authCheckStateFinished is also included in the authSuccess action                                
                         dispatch(authSuccess(token, userId, response.data.users[0].email));
                         dispatch(checkAuthTimeout((expirationTime.getTime() - new Date().getTime()) / 1000));
                     })

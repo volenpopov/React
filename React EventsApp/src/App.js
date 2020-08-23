@@ -28,54 +28,47 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-      console.log("STATE", this.state);
     const { userInfoChecked, userId, token } = this.props;
-    // console.log("DIDUP");
-    // console.log("prev props", prevProps);
-    // console.log("props", this.props);
+
     if (!this.state.themeVerified) {
-      console.log("1", userInfoChecked && userId && prevState.theme === this.state.theme);
-    console.log(this.props);
-    console.log(this.state);
-      console.log("2",(userInfoChecked && !userId));
-      console.log("3", (userInfoChecked && userId && prevState.theme !== this.state.theme));
-      if (userInfoChecked && userId && prevState.theme === this.state.theme) {
-        console.log("MAKATI DEBA");
-        
-
-        this.fetchUserTheme(userId, token, this.state.fetchingUserTheme);         
-
-          if (!this.state.fetchingUserTheme) {
-            this.setState({ fetchingUserTheme: true });        
-          }          
-      } else if (
-        (userInfoChecked && !userId) ||
-        (userInfoChecked && userId && prevState.theme !== this.state.theme)
+      if (
+        userInfoChecked &&
+        userId &&
+        prevState.theme === this.state.theme &&
+        !this.state.fetchingUserTheme
       ) {
+        this.fetchUserTheme(userId, token);
+        this.setState({ fetchingUserTheme: true });
+      } else if (userInfoChecked && !userId) {
         this.setState({ themeVerified: true });
       }
     }
   }
 
-  fetchUserTheme = (userId, token, alreadyCalled) => {
-    if (!alreadyCalled) {
-      axios
-        .get(constants.USER_THEME_URL + `/${userId}.json?auth=${token}`)
-        .then((response) => {
-            console.log("THEN");
-          const theme = response.data.theme;
+  fetchUserTheme = (userId, token) => {
+    axios
+      .get(constants.USER_THEME_URL + `/${userId}.json?auth=${token}`)
+      .then((response) => {
+        let theme;
+
+        if (response.data) {
+          theme = response.data.theme;
 
           if (theme !== this.state.theme) {
-            console.log("YYYYYYEEEEEEEEEEEAS");
-            this.setState({ theme, themeVerified: true });
-            } else {
-            this.setState({ themeVerified: true });
-            }
-        })
-        .catch((error) => error);
-    }
+            this.setState({
+              theme,
+              themeVerified: true,
+              fetchingUserTheme: false,
+            });
+          }
+        }
 
-    console.log("userTheme pending");
+        this.setState({
+          themeVerified: true,
+          fetchingUserTheme: false,
+        });
+      })
+      .catch((error) => error);
   };
 
   switchThemeHandler = (theme) => {
@@ -90,10 +83,13 @@ class App extends Component {
     this.setState({ theme });
   };
 
+  unverifyUserTheme = () => this.setState({ themeVerified: false });
+
   render() {
     if (!this.state.themeVerified) {
       return null;
     }
+
     const { isAuthenticated } = this.props;
 
     const pageNotFound = <h1 className="pageNotFound">404 Page Not Found</h1>;
@@ -101,6 +97,12 @@ class App extends Component {
 
     const authRoutes = [
       <Route path="/" key="/" exact render={() => <Redirect to="/events" />} />,
+      <Route
+        path="/publicEvents"
+        key="/publicEventsAuth"
+        exact
+        render={() => <Redirect to="/events" />}
+      />,
       <Route path="/events" key="/events" component={Events} />,
       <Route path="/profile" key="/profile" component={UserProfile} />,
       <Route path="/logout" key="/logout" render={() => <Redirect to="/" />} />,
@@ -144,8 +146,8 @@ class App extends Component {
                 )}
               />
               <Route path="/logout" render={() => <Redirect to="/" />} />
-              <Route path="/publicEvents" component={EventsGuest} />
               {isAuthenticated ? authRoutes : null}
+              <Route path="/publicEvents" component={EventsGuest} />
               <Route path="/" exact component={HomeGuest} />
               {pageNotFoundRoute}
             </Switch>
