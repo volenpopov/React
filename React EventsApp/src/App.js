@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import axios from "./axios-eventsapp";
@@ -17,86 +17,159 @@ import * as actions from "./store/actions/auth";
 import * as constants from "./helpers/constants";
 
 class App extends Component {
-  state = { theme: DEFAULT_THEME };
+  state = {
+    theme: DEFAULT_THEME,
+    themeVerified: false,
+    fetchingUserTheme: false,
+  };
 
-  componentDidMount() {    
-    this.props.onTryAutoSignup();     
+  componentDidMount() {
+    this.props.onTryAutoSignup();
   }
 
-  componentDidUpdate(prevProps, prevState) {   
-    if (!prevProps.userId && this.props.userId && prevState.theme === this.state.theme) {          
-      axios.get(constants.USER_THEME_URL + `/${this.props.userId}.json?auth=${this.props.token}`)
-        .then(response => {
-          const theme = response.data.theme;
+  componentDidUpdate(prevProps, prevState) {
+    const { userInfoChecked, userId, token } = this.props;
 
-          if (theme !== this.state.theme) {            
-            this.setState({ theme, themeVerified: true });
-          } else {
-            this.setState({ themeVerified: true });
-          }
-        })
-        .catch(error => error);
+    if (!this.state.themeVerified) {
+      if (
+        userInfoChecked &&
+        userId &&
+        prevState.theme === this.state.theme &&
+        !this.state.fetchingUserTheme
+      ) {
+        this.fetchUserTheme(userId, token);
+        this.setState({ fetchingUserTheme: true });
+      } else if (userInfoChecked && !userId) {
+        this.setState({ themeVerified: true });
+      }
     }
   }
 
-  switchThemeHandler = theme => {
+  fetchUserTheme = (userId, token) => {
+    axios
+      .get(constants.USER_THEME_URL + `/${userId}.json?auth=${token}`)
+      .then((response) => {
+        if (response.data) {
+          const theme = response.data.theme;
+
+          if (theme !== this.state.theme) {
+            this.setState({
+              theme,
+              themeVerified: true,
+              fetchingUserTheme: false
+            });
+          }
+        }
+
+        this.setState({
+          themeVerified: true,
+          fetchingUserTheme: false
+        });
+      })
+      .catch((error) => error);
+  };
+
+  switchThemeHandler = (theme) => {
     if (this.props.isAuthenticated) {
-        axios.put(constants.USER_THEME_URL + `/${this.props.userId}.json?auth=${this.props.token}`, { theme });          
-    }   
+      axios.put(
+        constants.USER_THEME_URL +
+          `/${this.props.userId}.json?auth=${this.props.token}`,
+        { theme }
+      );
+    }
 
     this.setState({ theme });
-  }
+  };
+
+  unverifyUserTheme = () => this.setState({ themeVerified: false });
 
   render() {
+    if (!this.state.themeVerified) {
+      return null;
+    }
+
     const { isAuthenticated } = this.props;
 
     const pageNotFound = <h1 className="pageNotFound">404 Page Not Found</h1>;
-    const pageNotFoundRoute = <Route render={() => pageNotFound}/>;
+    const pageNotFoundRoute = <Route render={() => pageNotFound} />;
 
     const authRoutes = [
-            <Route path="/" key="/" exact render={() => <Redirect to="/events"/>}/>,
-            <Route path="/events" key="/events" component={Events} />,
-            <Route path="/profile" key="/profile" component={UserProfile} />,
-            <Route path="/logout" key="/logout" render={() => <Redirect to="/"/>}/>,
-            <Route path="/bookings" key="/bookings" component={UserBookings} />,
+      <Route path="/" key="/" exact render={() => <Redirect to="/events" />} />,
+      <Route
+        path="/publicEvents"
+        key="/publicEventsAuth"
+        exact
+        render={() => <Redirect to="/events" />}
+      />,
+      <Route path="/events" key="/events" component={Events} />,
+      <Route path="/profile" key="/profile" component={UserProfile} />,
+      <Route path="/logout" key="/logout" render={() => <Redirect to="/" />} />,
+      <Route path="/bookings" key="/bookings" component={UserBookings} />,
     ];
 
     return (
       <div className="w-100 vh-100 d-flex flex-column">
-        <ThemeContext.Provider value={{ themeColor: this.state.theme, switchTheme: this.switchThemeHandler}}>
-          <Navbar authenticated={isAuthenticated}/>
-          <div className="d-flex align-items-center flex-grow-1 flex-wrap" style={{ height: "85%" }}>
-            <Switch>                
-                <Route path="/register" render={() => <AuthenticationForm login={false}/>}/>
-                <Route path="/login" render={() => <AuthenticationForm login={true}/>}/>
-                <Route path="/logout" render={() => <Redirect to="/"/>}/>
-                <Route path="/publicEvents" component={EventsGuest} />                
-                { isAuthenticated ? authRoutes : null }                
-                <Route path="/" exact component={HomeGuest}/>
-                { pageNotFoundRoute }
-            </Switch>           
+        <ThemeContext.Provider
+          value={{
+            themeColor: this.state.theme,
+            switchTheme: this.switchThemeHandler,
+          }}
+        >
+          <Navbar authenticated={isAuthenticated} />
+          <div
+            className="d-flex align-items-center flex-grow-1 flex-wrap"
+            style={{ height: "85%" }}
+          >
+            <Switch>
+              <Route
+                path="/register"
+                render={() => (
+                  <AuthenticationForm
+                    login={false}
+                    unverifyTheme={this.unverifyUserTheme}
+                  />
+                )}
+              />
+              <Route
+                path="/login"
+                render={() => (
+                  <AuthenticationForm
+                    login={true}
+                    unverifyTheme={this.unverifyUserTheme}
+                  />
+                )}
+              />
+              <Route path="/logout" render={() => <Redirect to="/" />} />
+              {isAuthenticated ? authRoutes : null}
+              <Route path="/publicEvents" component={EventsGuest} />
+              <Route path="/" exact component={HomeGuest} />
+              {pageNotFoundRoute}
+            </Switch>
           </div>
-          <Footer/>
-        </ThemeContext.Provider>          
+          <Footer />
+        </ThemeContext.Provider>
       </div>
-    )
-  };
-}
-
-const mapStateToProps = state => {
-  return {
-    isAuthenticated: state.token !== null,
-    userId: state.userId,
-    token: state.token
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {    
-    onTryAutoSignup: () => dispatch(actions.authCheckState())
+    );
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.token !== null,
+    userId: state.userId,
+    token: state.token,
+    userInfoChecked: state.userInfoChecked,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTryAutoSignup: () => dispatch(actions.authCheckState()),
+  };
+};
+
 const AppWithErrorHandler = withErrorHandler(App, axios);
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AppWithErrorHandler));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(AppWithErrorHandler)
+);

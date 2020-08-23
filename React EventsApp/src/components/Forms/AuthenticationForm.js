@@ -71,6 +71,7 @@ class AuthenticationForm extends Component {
             return;
         }
 
+        this.props.unverifyTheme();
         this.props.onAuth(email, password, this.props.login);                     
     };
 
