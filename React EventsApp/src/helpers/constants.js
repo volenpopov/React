@@ -7,6 +7,7 @@ export const REGISTER_URL = "https://identitytoolkit.googleapis.com/v1/accounts:
 export const LOGIN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos";
 export const GET_USER_DATA_URL = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDd8TxVsQtDGbDpQ3-2bV9binkfDHRYbos";
 export const USER_THEME_URL = "/userThemes";
+export const ERRORS_URL = "/errors";
 
 // DATES
 export const DATE_OPTIONS = { day: "2-digit", month: "2-digit", year: "numeric" };
