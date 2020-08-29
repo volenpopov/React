@@ -1,0 +1,15 @@
+.unexpectedErrorPage {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.unexpectedErrorPage > div {
+    text-align-last: center;
+}
+
+.unexpectedErrorPage > div > p {
+    font-size: 1.2rem;
+}

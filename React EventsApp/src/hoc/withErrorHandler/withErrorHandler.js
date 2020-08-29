@@ -5,6 +5,8 @@ import * as constants from "../../helpers/constants";
 import Modal from "../../components/Modal/Modal";
 import Backdrop from "../../components/Backdrop/Backdrop";
 
+import "./withErrorHandler.css";
+
 const withErrorHandler = ( WrappedComponent, axios ) => {
     return class extends Component {
         constructor(props) {
@@ -93,7 +95,14 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
                     </Fragment>
                 );
             } else if (hasError && !isNetworkError) {
-                content = <h1>Something went wrong</h1>;
+                content = (
+                    <div className="unexpectedErrorPage">
+                        <div>
+                            <h1>Unexpected Error :(</h1>
+                            <p>You can go back to our <a href="http://localhost:5000/">Homepage</a>.</p>
+                        </div>                        
+                    </div>
+                );
             }
 
             return content;
