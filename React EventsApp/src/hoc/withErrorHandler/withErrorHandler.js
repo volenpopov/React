@@ -19,8 +19,23 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
             };
 
             this.respInterceptor = axios.interceptors.response.use(resp => resp, error => {
+                const {
+                    baseURL,
+                    data,
+                    headers,
+                    method,
+                    url
+                } = error.config;
+
                 this.setState({
                     error,
+                    errorInfo: {
+                        baseURL,
+                        data,
+                        headers,
+                        method,
+                        url
+                    },
                     hasError: true,
                     isNetworkError: true
                 });
@@ -45,7 +60,9 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
 
         componentDidUpdate(prevProps, prevState) {
             if (!prevState.isNetworkError && this.state.isNetworkError) {
-                this.logError(this.state.error, "");
+                const { error, errorInfo } = this.state;
+
+                this.logError(error, errorInfo);
             }
         }
 
