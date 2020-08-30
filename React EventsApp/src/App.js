@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
-import { axiosInstance as axios } from "./axios-eventsapp";
+import {
+    axiosInstance as axios,
+    getUserTheme,
+    assignThemeToUser
+} from "./axios-eventsapp";
 import ThemeContext from "./context/theme-context";
 import { DEFAULT_THEME } from "./helpers/constants";
 import withErrorHandler from "./hoc/withErrorHandler/withErrorHandler";
@@ -14,7 +18,6 @@ import EventsGuest from "./pages/Events/EventsGuest";
 import UserBookings from "./pages/Bookings/UserBookings";
 import UserProfile from "./pages/Profile/UserProfile";
 import * as actions from "./store/actions/auth";
-import * as constants from "./helpers/constants";
 
 class App extends Component {
   state = {
@@ -46,8 +49,7 @@ class App extends Component {
   }
 
   fetchUserTheme = (userId, token) => {
-    axios
-      .get(constants.USER_THEME_URL + `/${userId}.json?auth=${token}`)
+    getUserTheme(userId, token)
       .then((response) => {
         if (response.data) {
           const theme = response.data.theme;
@@ -71,11 +73,11 @@ class App extends Component {
 
   switchThemeHandler = (theme) => {
     if (this.props.isAuthenticated) {
-      axios.put(
-        constants.USER_THEME_URL +
-          `/${this.props.userId}.json?auth=${this.props.token}`,
-        { theme }
-      );
+        assignThemeToUser(
+            this.props.userId,
+            this.props.token,
+            theme
+        );
     }
 
     this.setState({ theme });
