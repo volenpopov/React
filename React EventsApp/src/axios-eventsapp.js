@@ -30,9 +30,28 @@ const assignThemeToUser = (userId, token, theme) => {
       );
 };
 
+const getUserBookings = (token) => {
+    return axiosInstance.get(`${constants.BOOKINGS_URL}.json`, {
+        params: { auth: token }
+    });
+};
+
+const deleteUserBooking = (bookingId, eventName, token) => {
+    return axiosInstance.delete(`${constants.BOOKINGS_URL}/${eventName}/${bookingId}.json`, {
+        params: { auth: token }
+    });
+}
+
+const getEvents = () => {
+    return axiosInstance.get(`${constants.EVENTS_URL}.json`);
+}
+
 export {
     axiosInstance,
     getUserTheme,
     assignThemeToUser,
-    logErrorToDb
+    logErrorToDb,
+    getUserBookings,
+    getEvents,
+    deleteUserBooking
 };

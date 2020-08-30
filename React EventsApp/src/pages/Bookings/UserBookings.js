@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
-import { axiosInstance as axios } from "../../axios-eventsapp";
+import {
+    getUserBookings,
+    getEvents,
+    deleteUserBooking
+} from "../../axios-eventsapp";
 
 import ThemeContext from "../../context/theme-context";
 import * as constants from "../../helpers/constants";
@@ -15,8 +19,8 @@ const UserBookings = props => {
     
     useEffect(() => {
         if (props.userId && props.token) {
-            const userBookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}`);
-            const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
+            const userBookingsRequest = getUserBookings(props.token);
+            const eventsRequest = getEvents();
         
             Promise.all([userBookingsRequest, eventsRequest])
                 .then(([bookings, events]) => {
@@ -54,7 +58,7 @@ const UserBookings = props => {
     }, [props.userId, props.token]);
 
     const cancelBookingHandler = (bookingId, event) => {        
-        axios.delete(`${constants.BOOKINGS_URL}/${event}/${bookingId}.json?auth=${props.token}`)
+        deleteUserBooking(bookingId, event, props.token)
             .then(() => {
                 const updatedUserBookings = userBookings.filter(booking => booking.id !== bookingId);
 
