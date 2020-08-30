@@ -15,7 +15,7 @@ const UserBookings = props => {
     
     useEffect(() => {
         if (props.userId && props.token) {
-            const userBookingsRequest = requester.getUserBookings(props.token);
+            const userBookingsRequest = requester.getBookings(props.token);
             const eventsRequest = requester.getEvents();
         
             Promise.all([userBookingsRequest, eventsRequest])
@@ -54,7 +54,7 @@ const UserBookings = props => {
     }, [props.userId, props.token]);
 
     const cancelBookingHandler = (bookingId, event) => {        
-        requester.deleteUserBooking(bookingId, event, props.token)
+        requester.deleteBooking(bookingId, event, props.token)
             .then(() => {
                 const updatedUserBookings = userBookings.filter(booking => booking.id !== bookingId);
 

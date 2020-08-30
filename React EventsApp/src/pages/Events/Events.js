@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, Fragment } from "react";
 import { connect } from "react-redux";
-import { axiosInstance as axios } from "../../axios-eventsapp";
+import { eventsAppRequester as requester } from "../../axios-eventsapp";
 import { Form } from "react-bootstrap";
 
 import ThemeContext from "../../context/theme-context";
@@ -45,8 +45,8 @@ const Events = props => {
 
     useEffect(() => {     
         if (props.userId && props.token) {
-            const eventsRequest = axios.get(`${constants.EVENTS_URL}.json`);
-            const userBookingsRequest =  axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}"`);
+            const eventsRequest = requester.getEvents();
+            const userBookingsRequest =  requester.getBookings(props.token);
 
             Promise.all([eventsRequest, userBookingsRequest])
                 .then(([events, bookings]) => {
@@ -155,18 +155,12 @@ const Events = props => {
                 
                 Promise.all(imagesPromises)
                     .then(imagesBase64Array => {
-                        return axios.put(
-                            `${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`,
-                            { ...event, images: imagesBase64Array }
-                        );                            
+                        return requester.createEvent(event, imagesBase64Array, props.token);                           
                     })
                     .then(() => onSuccessfullEventCreation())
                     .catch(error => error);                                
             } else {
-                axios.put(
-                    `${constants.EVENTS_URL}/${title.toLowerCase()}.json?auth=${props.token}`,
-                    event
-                )                          
+                requester.createEvent(event, null, props.token)                         
                     .then(() => onSuccessfullEventCreation())
                     .catch(error => error);
             }
@@ -185,7 +179,7 @@ const Events = props => {
         };
                 
         if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
-            axios.post(`${constants.BOOKINGS_URL}/${eventId}.json?auth=${props.token}`, newBooking)
+            requester.bookEvent(eventId, newBooking, props.token)
                 .then(() => {
                     setUserBookings([...userBookings, newBooking]);
 

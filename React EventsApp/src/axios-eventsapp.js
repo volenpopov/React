@@ -29,13 +29,13 @@ const eventsAppRequester = {
         );
     },
 
-    getUserBookings: (token) => {
+    getBookings: (token) => {
         return axiosInstance.get(`${constants.BOOKINGS_URL}.json`, {
             params: { auth: token }
         });
     },
 
-    deleteUserBooking: (bookingId, eventName, token) => {
+    deleteBooking: (bookingId, eventName, token) => {
         return axiosInstance.delete(`${constants.BOOKINGS_URL}/${eventName}/${bookingId}.json`, {
             params: { auth: token }
         });
@@ -43,7 +43,18 @@ const eventsAppRequester = {
 
     getEvents: () => {
         return axiosInstance.get(`${constants.EVENTS_URL}.json`);
-    }
+    },
+
+    createEvent: (event, imagesBase64Array, token) => {
+        return axios.put(
+            `${constants.EVENTS_URL}/${event.title.toLowerCase()}.json?auth=${token}`,
+            { ...event, images: imagesBase64Array }
+        ); 
+    },
+
+    bookEvent: (eventId, newBooking, token) => {
+        return axios.post(`${constants.BOOKINGS_URL}/${eventId}.json?auth=${token}`, newBooking);
+    },
 };
 
 export {
