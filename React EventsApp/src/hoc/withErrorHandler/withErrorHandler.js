@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 
-import { logErrorToDb } from "../../axios-eventsapp";
+import { eventsAppRequester as requester } from "../../axios-eventsapp";
 
 import Modal from "../../components/Modal/Modal";
 import Backdrop from "../../components/Backdrop/Backdrop";
@@ -68,7 +68,7 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
 
         logError = (error, errorInfo) => {
             const userId = localStorage.getItem("userId");
-            logErrorToDb(error, errorInfo, userId);
+            requester.logErrorToDb(error, errorInfo, userId);
         }
 
         closeModalHandler = () => {

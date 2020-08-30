@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import {
     axiosInstance as axios,
-    getUserTheme,
-    assignThemeToUser
+    eventsAppRequester as requester
 } from "./axios-eventsapp";
 import ThemeContext from "./context/theme-context";
 import { DEFAULT_THEME } from "./helpers/constants";
@@ -49,7 +48,7 @@ class App extends Component {
   }
 
   fetchUserTheme = (userId, token) => {
-    getUserTheme(userId, token)
+    requester.getUserTheme(userId, token)
       .then((response) => {
         if (response.data) {
           const theme = response.data.theme;
@@ -73,7 +72,7 @@ class App extends Component {
 
   switchThemeHandler = (theme) => {
     if (this.props.isAuthenticated) {
-        assignThemeToUser(
+        requester.assignThemeToUser(
             this.props.userId,
             this.props.token,
             theme

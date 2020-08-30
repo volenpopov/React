@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
-import {
-    getUserBookings,
-    getEvents,
-    deleteUserBooking
-} from "../../axios-eventsapp";
+import { eventsAppRequester as requester } from "../../axios-eventsapp";
 
 import ThemeContext from "../../context/theme-context";
 import * as constants from "../../helpers/constants";
@@ -19,8 +15,8 @@ const UserBookings = props => {
     
     useEffect(() => {
         if (props.userId && props.token) {
-            const userBookingsRequest = getUserBookings(props.token);
-            const eventsRequest = getEvents();
+            const userBookingsRequest = requester.getUserBookings(props.token);
+            const eventsRequest = requester.getEvents();
         
             Promise.all([userBookingsRequest, eventsRequest])
                 .then(([bookings, events]) => {
@@ -58,7 +54,7 @@ const UserBookings = props => {
     }, [props.userId, props.token]);
 
     const cancelBookingHandler = (bookingId, event) => {        
-        deleteUserBooking(bookingId, event, props.token)
+        requester.deleteUserBooking(bookingId, event, props.token)
             .then(() => {
                 const updatedUserBookings = userBookings.filter(booking => booking.id !== bookingId);
 
