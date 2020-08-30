@@ -6,6 +6,15 @@ const axiosInstance = axios.create({
     baseURL: "https://eventsapp-4d16f.firebaseio.com"
 });
 
+const logErrorToDb = (error, errorInfo, userId) => {
+    return axiosInstance.post(`${constants.ERRORS_URL}.json`, {
+        error: error.toString(),
+        errorInfo,
+        userId: userId || "",
+        createdAt: new Date()
+    });
+};
+
 const getUserTheme = (userId, token) => {
     return axiosInstance.get(constants.USER_THEME_URL + `/${userId}.json`, {
         params: { auth: token }
@@ -19,10 +28,11 @@ const assignThemeToUser = (userId, token, theme) => {
             theme
         }
       );
-}
+};
 
 export {
     axiosInstance,
     getUserTheme,
-    assignThemeToUser
+    assignThemeToUser,
+    logErrorToDb
 };
