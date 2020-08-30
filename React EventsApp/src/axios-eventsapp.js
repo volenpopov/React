@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const instance = axios.create({
+const axiosInstance = axios.create({
     baseURL: "https://eventsapp-4d16f.firebaseio.com"
 });
 
-export default instance;
+export {
+    axiosInstance
+};

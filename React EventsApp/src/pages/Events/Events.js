@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, Fragment } from "react";
 import { connect } from "react-redux";
-import axios from "../../axios-eventsapp";
+import { axiosInstance as axios } from "../../axios-eventsapp";
 import { Form } from "react-bootstrap";
 
 import ThemeContext from "../../context/theme-context";

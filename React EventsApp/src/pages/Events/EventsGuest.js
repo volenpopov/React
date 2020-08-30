@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import axios from "../../axios-eventsapp";
+import { axiosInstance as axios } from "../../axios-eventsapp";
 
 import EventsList from "../../components/Event/EventsList";
 import EventDetailsModal from "../../components/Event/EventDetailsModal";

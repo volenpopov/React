@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
-import axios from "../../axios-eventsapp";
+import { axiosInstance as axios } from "../../axios-eventsapp";
 
 import ThemeContext from "../../context/theme-context";
 import * as constants from "../../helpers/constants";
