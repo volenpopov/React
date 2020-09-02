@@ -20,9 +20,9 @@ const UserBookings = props => {
         
             Promise.all([userBookingsRequest, eventsRequest])
                 .then(([bookings, events]) => {
-                    const bookingsByEvents = bookings.data;
-                    const allEvents = events.data;
-
+                    const bookingsByEvents = bookings.data || {};
+                    const allEvents = events.data || {};
+                    
                     const userBookings = [];
 
                     Object.keys(bookingsByEvents).forEach((event) => {
@@ -42,7 +42,7 @@ const UserBookings = props => {
                             }
                         }); 
                     });
-                    
+
                     if (userBookings.length) {
                         setUserBookings(userBookings);
                     } else {
