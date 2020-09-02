@@ -19,11 +19,13 @@ const Events = props => {
     const themeContext = useContext(ThemeContext);
 
     const [showCreateModal, setShowCreateModal] = useState(false);
-
+ 
     const [notificationType, setNotificationType] = useState(null);
     const [notificationStyle, setNotificationStyles] = useState({
         left: "-275px"
     });
+
+    const [timeoutId, setTimeoutId] = useState(null);
 
     const [userEvents, setEvents] = useState([]);
     const [userBookings, setUserBookings] = useState([]);
@@ -42,6 +44,14 @@ const Events = props => {
     const dateRef = useRef(null);
     const descriptionRef = useRef(null);
     const imagesRef = useRef(null);
+
+    // Clear any pending async actions / setTimeouts on component unmount
+    // or before dispatching a new setTimeout
+    useEffect(() => {
+        if (timeoutId) {
+            return () => clearTimeout(timeoutId);
+        }        
+    }, [timeoutId]);
 
     useEffect(() => {     
         if (props.userId && props.token) {
@@ -107,9 +117,11 @@ const Events = props => {
 
         showNotification("event");
 
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {            
             hideNotification();
-        }, 1500);
+        }, 1500);        
+
+        setTimeoutId(timeoutId);
     };
 
     const onCreateEvent = () => {
@@ -185,9 +197,11 @@ const Events = props => {
 
                     showNotification("booking");
 
-                    setTimeout(() => {
+                    const timeoutId = setTimeout(() => {
                         hideNotification();
                     }, 1500);
+                    
+                    setTimeoutId(timeoutId);
                 })
                 .catch(error => error);
         }        
