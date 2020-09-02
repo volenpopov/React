@@ -16,6 +16,14 @@ const eventsAppRequester = {
         });
     },
 
+    authenticate: (url, authData) => {
+        return axiosInstance.post(url, authData);
+    },
+
+    getUserData: (token) => {
+        return axiosInstance.post(constants.GET_USER_DATA_URL, { idToken: token })
+    },
+
     getUserTheme: (userId, token) => {
         return axiosInstance.get(constants.USER_THEME_URL + `/${userId}.json`, {
             params: { auth: token }
@@ -41,19 +49,44 @@ const eventsAppRequester = {
         });
     },
 
+    deleteEvent: (eventId, token) => {
+        return axiosInstance.delete(`${constants.EVENTS_URL}/${eventId}.json`, {
+            params: { auth: token }
+        })
+    },
+
+    deleteAllBookingsForASpecificEvent: (eventId, token) => {
+        return axiosInstance.delete(`${constants.BOOKINGS_URL}/${eventId}.json`, {
+            params: { auth: token }
+        });
+    },
+
     getEvents: () => {
         return axiosInstance.get(`${constants.EVENTS_URL}.json`);
     },
 
+    getEventsOrderedByCreator: (userId) => {
+        return axiosInstance.get(`${constants.EVENTS_URL}.json`, {
+            params: {
+                orderBy: `"creator"`,
+                equalTo: `"${userId}"`
+            }
+        });
+    },
+
     createEvent: (event, imagesBase64Array, token) => {
-        return axios.put(
-            `${constants.EVENTS_URL}/${event.title.toLowerCase()}.json?auth=${token}`,
-            { ...event, images: imagesBase64Array }
+        return axiosInstance.put(
+            `${constants.EVENTS_URL}/${event.title.toLowerCase()}.json`,
+            { ...event, images: imagesBase64Array },
+            { params: { auth: token }}
         ); 
     },
 
     bookEvent: (eventId, newBooking, token) => {
-        return axios.post(`${constants.BOOKINGS_URL}/${eventId}.json?auth=${token}`, newBooking);
+        return axiosInstance.post(`${constants.BOOKINGS_URL}/${eventId}.json`,
+            newBooking,
+            { params: { auth: token }}
+        );
     },
 };
 

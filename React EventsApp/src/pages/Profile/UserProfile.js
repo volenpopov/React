@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
-import { axiosInstance as axios } from "../../axios-eventsapp";
+import { eventsAppRequester as requester } from "../../axios-eventsapp";
 
 import ThemeContext from "../../context/theme-context";
 import * as constants from "../../helpers/constants";
@@ -15,8 +15,8 @@ const UserEvents = props => {
         
     useEffect(() => {
         if (props.userId && props.token) {
-            const userEventsRequest = axios.get(`${constants.EVENTS_URL}.json?orderBy="creator"&equalTo="${props.userId}"`);
-            const bookingsRequest = axios.get(`${constants.BOOKINGS_URL}.json?auth=${props.token}`);
+            const userEventsRequest = requester.getEventsOrderedByCreator(props.userId);
+            const bookingsRequest = requester.getBookings(props.token);
     
             Promise.all([userEventsRequest, bookingsRequest])
                 .then(([events, bookings]) => {
@@ -66,10 +66,10 @@ const UserEvents = props => {
     const deleteEventHandler = (eventId) => {
         const eventAttendees = userEvents[eventId].totalAttendees;
         
-        const deleteEventRequest = axios.delete(`${constants.EVENTS_URL}/${eventId}.json?auth=${props.token}`);
+        const deleteEventRequest = requester.deleteEvent(eventId, props.token);
 
         if (eventAttendees) {
-            const deleteAllEventBookings = axios.delete(`${constants.BOOKINGS_URL}/${eventId}.json?auth=${props.token}`);
+            const deleteAllEventBookings = requester.deleteAllBookingsForASpecificEvent(eventId, props.token);
            
             Promise.all([deleteAllEventBookings, deleteEventRequest])
                 .then(() => updateEventsAfterDeletion(eventId))

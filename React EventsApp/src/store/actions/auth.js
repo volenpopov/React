@@ -1,4 +1,4 @@
-import axios from "axios";
+import { eventsAppRequester as requester } from "../../axios-eventsapp";
 import * as actionTypes from "./actionTypes";
 import * as constants from "../../helpers/constants";
 
@@ -44,7 +44,7 @@ export const auth = ( email, password, login ) => {
 
         const url = login ? constants.LOGIN_URL : constants.REGISTER_URL;
 
-        axios.post(url, authData)
+        requester.authenticate(url, authData)
             .then(response => {
                 const expirationTime = new Date(new Date().getTime() + response.data.expiresIn * 1000);
 
@@ -86,7 +86,7 @@ export const authCheckState = () => {
                 dispatch(authCheckStateFinished());
                 dispatch(logout());                
             } else {                
-                axios.post(constants.GET_USER_DATA_URL, { idToken: token })
+                requester.getUserData(token)
                     .then(response => {      
                         // authCheckStateFinished is also included in the authSuccess action                                
                         dispatch(authSuccess(token, userId, response.data.users[0].email));
