@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { axiosInstance as axios } from "../../axios-eventsapp";
+
+import { eventsAppRequester as requester } from "../../axios-eventsapp";
 
 import EventsList from "../../components/Event/EventsList";
 import EventDetailsModal from "../../components/Event/EventDetailsModal";
 import Backdrop from "../../components/Backdrop/Backdrop";
-import * as constants from "../../helpers/constants";
 import parseEvents from "../../helpers/eventsParser";
 
 import "./Events.css";
@@ -14,7 +14,7 @@ const Events = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
 
     useEffect(() => {        
-        axios.get(`${constants.EVENTS_URL}.json`)
+        requester.getEvents()
             .then((resp) => {
                 const events = parseEvents(resp.data);                                                                   
                 setEvents(events);                
