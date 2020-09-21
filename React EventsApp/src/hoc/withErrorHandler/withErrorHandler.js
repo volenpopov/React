@@ -15,7 +15,7 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
             this.state = {
                 error: null,
                 hasError: false,
-                isNetworkError: false
+                isHttpError: false
             };
 
             this.respInterceptor = axios.interceptors.response.use(resp => resp, error => {
@@ -37,7 +37,7 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
                         url
                     },
                     hasError: true,
-                    isNetworkError: true
+                    isHttpError: true
                 });
             });
         }
@@ -59,7 +59,7 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
         }
 
         componentDidUpdate(prevProps, prevState) {
-            if (!prevState.isNetworkError && this.state.isNetworkError) {
+            if (!prevState.isHttpError && this.state.isHttpError) {
                 const { error, errorInfo } = this.state;
 
                 this.logError(error, errorInfo);
@@ -75,14 +75,14 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
             this.setState({
                 error: null,
                 hasError: false,
-                isNetworkError: false
+                isHttpError: false
             });
         }        
         
         render() {
             const {
                 hasError,
-                isNetworkError
+                isHttpError
             } = this.state;
 
             const errorMessage = "An error occurred, please, try again or contact the support team.";
@@ -98,14 +98,14 @@ const withErrorHandler = ( WrappedComponent, axios ) => {
 
             let content = <WrappedComponent { ...this.props }/>;
 
-            if (hasError && isNetworkError) {
+            if (hasError && isHttpError) {
                 content = (
                     <Fragment>
                         { errorModal }                    
                         <WrappedComponent { ...this.props }/>
                     </Fragment>
                 );
-            } else if (hasError && !isNetworkError) {
+            } else if (hasError && !isHttpError) {
                 content = (
                     <div className="unexpectedErrorPage">
                         <div>
