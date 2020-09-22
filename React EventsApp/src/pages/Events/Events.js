@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef, Fragment } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { eventsAppRequester as requester } from "../../axios-eventsapp";
 import { Form } from "react-bootstrap";
 
@@ -39,6 +39,10 @@ const Events = props => {
         images: null
     });
 
+    const token = useSelector((state) => state.token);
+    const userId = useSelector((state) => state.userId);
+    const isAuthenticated = useSelector((state) => state.token !== null);
+
     const titleRef = useRef(null);
     const priceRef = useRef(null);
     const dateRef = useRef(null);
@@ -54,16 +58,16 @@ const Events = props => {
     }, [timeoutId]);
 
     useEffect(() => {     
-        if (props.userId && props.token) {
+        if (userId && token) {
             const eventsRequest = requester.getEvents();
-            const userBookingsRequest =  requester.getBookings(props.token);
+            const userBookingsRequest =  requester.getBookings(token);
 
             Promise.all([eventsRequest, userBookingsRequest])
                 .then(([events, bookings]) => {
-                    const userEvents = parseEvents(events.data, props.userId);
+                    const userEvents = parseEvents(events.data, userId);
                     const bookingsByEvents = bookings.data;
 
-                    setEvents(userEvents, props.userId);
+                    setEvents(userEvents, userId);
 
                     const userBookings = [];
 
@@ -73,7 +77,7 @@ const Events = props => {
                         Object.keys(eventBookings).forEach((bookingKey) => {
                             const booking = eventBookings[bookingKey];
                             
-                            if (booking.userId === props.userId) {
+                            if (booking.userId === userId) {
                                 userBookings.push(booking);
                             }
                         }); 
@@ -83,7 +87,7 @@ const Events = props => {
                 })
                 .catch(error => error); 
         }                  
-    }, [props.userId, props.token]);
+    }, [userId, token]);
 
     const showNotification = (type) => {
         setNotificationType(type);
@@ -160,19 +164,19 @@ const Events = props => {
         };
                 
         if (Object.keys(errors).every(key => !errors[key])) {
-            const event = { title, price, date, description, creator: props.userId };
+            const event = { title, price, date, description, creator: userId };
 
             if (files.length) {
                 const imagesPromises = files.map(imageFile => getBase64(imageFile));
                 
                 Promise.all(imagesPromises)
                     .then(imagesBase64Array => {
-                        return requester.createEvent(event, imagesBase64Array, props.token);                           
+                        return requester.createEvent(event, imagesBase64Array, token);                           
                     })
                     .then(() => onSuccessfullEventCreation())
                     .catch(error => error);                                
             } else {
-                requester.createEvent(event, null, props.token)                         
+                requester.createEvent(event, null, token)                         
                     .then(() => onSuccessfullEventCreation())
                     .catch(error => error);
             }
@@ -185,13 +189,13 @@ const Events = props => {
         setSelectedEvent(null);  
 
         const newBooking = { 
-            userId: props.userId, 
+            userId, 
             eventId, 
             bookedOn: new Date() 
         };
                 
-        if (!userBookings.find(booking => booking.userId === props.userId && booking.eventId === eventId)) {
-            requester.bookEvent(eventId, newBooking, props.token)
+        if (!userBookings.find(booking => booking.userId === userId && booking.eventId === eventId)) {
+            requester.bookEvent(eventId, newBooking, token)
                 .then(() => {
                     setUserBookings([...userBookings, newBooking]);
 
@@ -223,7 +227,7 @@ const Events = props => {
             title="Create Event" 
             actionButtonText="Create"
             onFormSubmit={onCreateEvent}
-            authenticated={props.isAuthenticated}
+            authenticated={isAuthenticated}
             closeModal={closeModalHandler}>            
                 <Form.Group controlId="formBasicTitle" className="mb-0">
                     <Form.Label>Title:</Form.Label>
@@ -270,7 +274,7 @@ const Events = props => {
             selectedEvent={selectedEvent} 
             setSelectedEvent={setSelectedEvent}
             onFormSubmit={() => bookEventHandler(selectedEvent.title.toLowerCase())}
-            authenticated={props.isAuthenticated}
+            authenticated={isAuthenticated}
         />
     );
 
@@ -309,7 +313,7 @@ const Events = props => {
                 </Fragment> 
                 : null
             }
-            {props.isAuthenticated ? createEventDiv : null}
+            {isAuthenticated ? createEventDiv : null}
             <div className="w-100 mt-4 mb-0 mb-sm-4">
                 <p className="allUpcomingEvents text-center">Upcoming Events:</p>
                 <div className="parsedItemsContainer">
@@ -320,12 +324,4 @@ const Events = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {        
-        isAuthenticated: state.token !== null,
-        userId: state.userId,
-        token: state.token
-    };
-};
-
-export default connect(mapStateToProps)(Events);
+export default Events;

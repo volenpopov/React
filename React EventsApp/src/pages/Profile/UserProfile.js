@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { eventsAppRequester as requester } from "../../axios-eventsapp";
 
 import ThemeContext from "../../context/theme-context";
@@ -12,15 +12,18 @@ const UserEvents = props => {
 
     const [userEvents, setUserEvents] = useState({});
     const [noEventsMessage, setNoEventsMessage] = useState(null);
+
+    const userId = useSelector((state) => state.userId);
+    const token = useSelector((state) => state.token);
         
     useEffect(() => {
-        if (props.userId && props.token) {
-            const userEventsRequest = requester.getEventsOrderedByCreator(props.userId);
-            const bookingsRequest = requester.getBookings(props.token);
+        if (userId && token) {
+            const userEventsRequest = requester.getEventsOrderedByCreator(userId);
+            const bookingsRequest = requester.getBookings(token);
     
             Promise.all([userEventsRequest, bookingsRequest])
                 .then(([events, bookings]) => {
-                    if (props.userId && props.token) {
+                    if (userId && token) {
                         const userEvents = events.data;
                         const allBookings = bookings.data;
                         
@@ -44,7 +47,7 @@ const UserEvents = props => {
                 })
                 .catch(error => error);   
         }                
-    }, [props.userId, props.token]);
+    }, [userId, token]);
 
     const updateEventsAfterDeletion = (eventId) => {
         const updatedEvents = Object.keys(userEvents)
@@ -66,10 +69,10 @@ const UserEvents = props => {
     const deleteEventHandler = (eventId) => {
         const eventAttendees = userEvents[eventId].totalAttendees;
         
-        const deleteEventRequest = requester.deleteEvent(eventId, props.token);
+        const deleteEventRequest = requester.deleteEvent(eventId, token);
 
         if (eventAttendees) {
-            const deleteAllEventBookings = requester.deleteAllBookingsForASpecificEvent(eventId, props.token);
+            const deleteAllEventBookings = requester.deleteAllBookingsForASpecificEvent(eventId, token);
            
             Promise.all([deleteAllEventBookings, deleteEventRequest])
                 .then(() => updateEventsAfterDeletion(eventId))
@@ -118,9 +121,4 @@ const UserEvents = props => {
     );        
 }
 
-const mapStateToProps = state => ({ 
-    userId: state.userId,
-    token: state.token
-});
-
-export default connect(mapStateToProps)(UserEvents);
+export default UserEvents;
