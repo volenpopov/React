@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useReducer, useContext } from "react";
 import { useSelector } from "react-redux";
 import { eventsAppRequester as requester } from "../../axios-eventsapp";
 
@@ -7,15 +7,46 @@ import * as constants from "../../helpers/constants";
 
 import "./UserProfile.css";
 
+const initialState = {
+    userEvents: {},
+    noEventsMessage: null
+};
+
+const actions = {
+    SET_USER_EVENTS: "SET_USER_EVENTS",
+    SET_NO_EVENTS_MSG: "SET_NO_EVENTS_MSG"
+};
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case actions.SET_USER_EVENTS:
+            return {
+                ...state,
+                userEvents: action.userEvents                
+            };
+        case actions.SET_NO_EVENTS_MSG:
+            return {
+                ...state,
+                noEventsMessage: action.message
+            };
+        default:
+            throw new Error("Error: unknown action dispatched to reducer");
+    }
+}
+
 const UserEvents = props => {
     const themeContext = useContext(ThemeContext);
 
-    const [userEvents, setUserEvents] = useState({});
-    const [noEventsMessage, setNoEventsMessage] = useState(null);
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     const userId = useSelector((state) => state.userId);
     const token = useSelector((state) => state.token);
         
+    const {
+        userEvents,
+        noEventsMessage
+    } = state;
+
     useEffect(() => {
         if (userId && token) {
             const userEventsRequest = requester.getEventsOrderedByCreator(userId);
@@ -39,9 +70,15 @@ const UserEvents = props => {
                                     }                                    
                                 });                            
                             }      
-                            setUserEvents({ ...userEvents });              
+                            dispatch({
+                                type: actions.SET_USER_EVENTS,
+                                userEvents
+                            });
                         } else {
-                            setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
+                            dispatch({
+                                type: actions.SET_NO_EVENTS_MSG,
+                                message: constants.NO_EVENTS_MESSAGE
+                            });
                         }
                     }                                
                 })
@@ -59,10 +96,16 @@ const UserEvents = props => {
                 return obj;
             }, {});
                     
-        setUserEvents(updatedEvents);
+        dispatch({
+            type: actions.SET_USER_EVENTS,
+            userEvents: updatedEvents
+        });
 
         if (!Object.keys(updatedEvents).length) {
-            setNoEventsMessage(constants.NO_EVENTS_MESSAGE);
+            dispatch({
+                type: actions.SET_NO_EVENTS_MSG,
+                message: constants.NO_EVENTS_MESSAGE
+            });
         }
     };
 
