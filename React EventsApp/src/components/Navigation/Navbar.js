@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from "react";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Navbar, Nav } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import ThemeContext from "../../context/theme-context";
@@ -10,6 +10,11 @@ import "./Navbar.css";
 export const Navigationbar = props => {
   const themeContext = useContext(ThemeContext);
   
+  const dispatch = useDispatch();
+
+  const email = useSelector((state) => state.userEmail);
+  const loading = useSelector((state) => state.loading);
+
   const headerMenu = (
     <Fragment>
       <NavLink to="/login" activeClassName="activeNavButton" className="navLinkStyle mr-2 mt-2 mt-sm-0 mb-2 mb-sm-0 px-2">Login</NavLink> 
@@ -19,9 +24,9 @@ export const Navigationbar = props => {
 
   const authenticatedHeaderMenu = (
     <Fragment>
-      <p className="greetingMessage px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Welcome, <NavLink to="/profile" activeClassName="activeNavButton" className="userEmail px-2">{props.email}!</NavLink></p>
+      <p className="greetingMessage px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Welcome, <NavLink to="/profile" activeClassName="activeNavButton" className="userEmail px-2">{email}!</NavLink></p>
       <NavLink to="/bookings" activeClassName="activeNavButton" className="navLinkStyle px-2 mr-0 mr-sm-2 mt-2 mt-sm-0 mb-2 mb-sm-0">Bookings</NavLink>
-      <NavLink to="/logout" activeClassName="activeNavButton" className="navLinkStyle px-2 mt-0 mt-sm-0 mb-2 mb-sm-0" onClick={props.onLogout}>Logout</NavLink>                
+      <NavLink to="/logout" activeClassName="activeNavButton" className="navLinkStyle px-2 mt-0 mt-sm-0 mb-2 mb-sm-0" onClick={() => dispatch(actions.logout())}>Logout</NavLink>                
     </Fragment>  
   );
 
@@ -40,7 +45,7 @@ export const Navigationbar = props => {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
         {
-            props.loading
+            loading
                 ? null
                 : props.authenticated
                     ? authenticatedHeaderMenu
@@ -52,17 +57,4 @@ export const Navigationbar = props => {
   );
 };
 
-const mapStateToProps = state => {
-  return { 
-    email: state.userEmail, 
-    loading: state.loading
-  };
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogout: () => dispatch(actions.logout())
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Navigationbar);
+export default Navigationbar;
