@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { eventsAppRequester as requester } from "../../axios-eventsapp";
 
 import ThemeContext from "../../context/theme-context";
@@ -13,9 +13,12 @@ const UserBookings = props => {
     const [userBookings, setUserBookings] = useState([]);
     const [noBookingsMessage, setNoBookingsMessage] = useState(null);
     
+    const userId = useSelector((state) => state.userId);
+    const token = useSelector((state) => state.token);
+
     useEffect(() => {
-        if (props.userId && props.token) {
-            const userBookingsRequest = requester.getBookings(props.token);
+        if (userId && token) {
+            const userBookingsRequest = requester.getBookings(token);
             const eventsRequest = requester.getEvents();
         
             Promise.all([userBookingsRequest, eventsRequest])
@@ -31,7 +34,7 @@ const UserBookings = props => {
                         Object.keys(eventBookings).forEach((bookingKey) => {
                             const booking = eventBookings[bookingKey];
                             
-                            if (booking.userId === props.userId) {                                                                
+                            if (booking.userId === userId) {                                                                
                                 const eventDate = allEvents[booking.eventId].date;
                                 
                                 userBookings.push({
@@ -51,10 +54,10 @@ const UserBookings = props => {
                 })
                 .catch(error => error);
         }
-    }, [props.userId, props.token]);
+    }, [userId, token]);
 
     const cancelBookingHandler = (bookingId, event) => {        
-        requester.deleteBooking(bookingId, event, props.token)
+        requester.deleteBooking(bookingId, event, token)
             .then(() => {
                 const updatedUserBookings = userBookings.filter(booking => booking.id !== bookingId);
 
@@ -108,9 +111,4 @@ const UserBookings = props => {
     );
 };
 
-const mapStateToProps = state => ({ 
-    userId: state.userId,
-    token: state.token
-});
-
-export default connect(mapStateToProps)(UserBookings);
+export default UserBookings;
