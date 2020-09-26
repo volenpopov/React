@@ -4,9 +4,9 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     background: white;    
     z-index: 1;
+    animation: openModal 0.5s forwards;
 }
 
 .title {
@@ -33,4 +33,16 @@
     background: white;
     color: black;
     font-weight: bold;
+}
+
+@keyframes openModal {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }
