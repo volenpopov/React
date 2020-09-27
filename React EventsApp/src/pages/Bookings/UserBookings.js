@@ -35,10 +35,14 @@ const UserBookings = props => {
                             const booking = eventBookings[bookingKey];
                             
                             if (booking.userId === userId) {                                                                
-                                const eventDate = allEvents[booking.eventId].date;
+                                const {
+                                    title, 
+                                    date: eventDate
+                                } = allEvents[booking.eventId];
                                 
                                 userBookings.push({
                                     id: bookingKey,
+                                    eventTitle: title,
                                     eventDate,
                                     ...booking
                                 });
@@ -81,7 +85,7 @@ const UserBookings = props => {
             <div className="eventContainer" key={booking.id}>
                 <div className="d-flex flex-column align-items-center p-3">
                     <p className="eventTitle">
-                        {`${booking.eventId} - ${new Date(booking.eventDate).toLocaleDateString("en-GB", constants.DATE_AND_TIME_OPTIONS)}`}
+                        {`${booking.eventTitle} - ${new Date(booking.eventDate).toLocaleDateString("en-GB", constants.DATE_AND_TIME_OPTIONS)}`}
                     </p>
                     <p 
                         className={`bg-${themeContext.themeColor} text-white px-2 mb-0 rounded text-center align-self-start`}
